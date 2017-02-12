@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>linkxzhou的博客</title>
-    <link>http://linkxzhou.github.io/feed/index.xml</link>
+    <link>https://linkxzhou.github.io:1313/feed/index.xml</link>
     <description>Recent content on linkxzhou的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Sun, 12 Feb 2017 18:20:42 +0800</lastBuildDate>
-    <atom:link href="http://linkxzhou.github.io/feed/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://linkxzhou.github.io:1313/feed/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>hugo搭建github博客过程</title>
-      <link>http://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</link>
+      <link>https://linkxzhou.github.io:1313/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</link>
       <pubDate>Sun, 12 Feb 2017 18:20:42 +0800</pubDate>
       
-      <guid>http://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</guid>
+      <guid>https://linkxzhou.github.io:1313/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</guid>
       <description>
 
 &lt;h1 id=&#34;hugo搭建github博客过程&#34;&gt;hugo搭建github博客过程&lt;/h1&gt;
