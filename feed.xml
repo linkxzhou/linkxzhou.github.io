@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linkxzhou的博客</title>
+    <link>http://localhost:1313/feed/index.xml</link>
+    <description>Recent content on linkxzhou的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 12 Feb 2017 18:20:42 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/feed/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>hugo搭建github博客过程</title>
+      <link>http://localhost:1313/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Sun, 12 Feb 2017 18:20:42 +0800</pubDate>
+      
+      <guid>http://localhost:1313/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</guid>
+      <description>
+
+&lt;h1 id=&#34;hugo搭建github博客过程&#34;&gt;hugo搭建github博客过程&lt;/h1&gt;
+
+&lt;h2 id=&#34;安装&#34;&gt;安装&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;1.安装hugo&lt;/strong&gt;
+hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自己的用户名.Github.io的Github仓库中，实现一个静态站点，一般用于博客或者项目主页等，先从&lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;官网&lt;/a&gt;下载(mac机器上可以直接用brew install hugo)&lt;br&gt;
+安装完成hugo，然后使用huge new site blog-name，进入blog-name可以看到如下结构：&lt;br&gt;
+▸ archetypes/ &lt;br&gt;
+▸ content/ &lt;br&gt;
+▸ layouts/ &lt;br&gt;
+▸ static/ &lt;br&gt;
+  config.toml &lt;br&gt;
+添加about.md到目录中，执行命令：hugo new about.md，产生的about.md存在content文件夹中 &lt;br&gt;
+添加第一条blog文件到目录中，执行命令：hugo new post/你的blog的文件名.md(注意：hugo命令必须在根目录执行，否则会报错) &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2.安装主题&lt;/strong&gt; &lt;br&gt;
+hugo可以自己配制主题，在blog-name文件夹中创建themes，然后将主题文件夹放到themes中 &lt;br&gt;
+目前hugo的github收录了很多主题列表： &lt;a href=&#34;https://github.com/spf13/hugoThemes，&#34;&gt;https://github.com/spf13/hugoThemes，&lt;/a&gt; 可以git clone 你想要的主题 &lt;br&gt;
+目前我的blog使用的主题：git clone &lt;a href=&#34;https://github.com/coderzh/hugo-pacman-theme&#34;&gt;https://github.com/coderzh/hugo-pacman-theme&lt;/a&gt; &lt;br&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;启动&#34;&gt;启动&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;hugo server --theme=hugo-pacman-theme --buildDrafts --watch -d ./public
+--theme 使用主题，对应到themes文件夹目录
+--buildDrafts 构建暂时不发布的markdown，根据markdown的draft判断(true -- 草稿文件，false -- 生成站点文件)
+--watch 监听文件变化，文件变化后网页上自动变化
+-d 目标文件 生成对应的发布github目录文件‘
+// 其他命令
+--port=80 // 绑定端口
+--bind=0.0.0.0 // 绑定ip
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;发布github&#34;&gt;发布github&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;1.创建github目录文件&lt;/strong&gt; &lt;br&gt;
+在github中New reository，用户名一定要用：你的注册用户名.github.io，其他无需修改，然后点击Create repository即可 &lt;br&gt;
+&lt;strong&gt;2.github本地文件提交&lt;/strong&gt;
+```
+// 1.设置配置
+git config &amp;ndash;global user.name &amp;ldquo;你的注册用户名&amp;rdquo;
+git config &amp;ndash;global user.email &amp;ldquo;你的邮箱&amp;rdquo;
+git config &amp;ndash;global color.ui auto
+// 2.设置生成的ssh key
+ssh-keygen -t rsa -C &amp;ldquo;你的邮箱&amp;rdquo;
+要求输入存储id_rsa的目录，接着是输入密码，这个密码可以与github的不同，过程中确认即可，
+最后会出现一个随机图形，说明生成SSH密匙成功，这样需要到刚刚的存储目录下打开id_rsa.pub复制里面的内容，
+到你的github页面上-&amp;gt;点击右上角头像旁三角-&amp;gt;settings-&amp;gt;SSH keys-&amp;gt;add SSH key-&amp;gt;黏贴刚刚复制的内容保存&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>about</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Sun, 12 Feb 2017 17:27:31 +0800</pubDate>
+      
+      <guid>http://localhost:1313/about/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
