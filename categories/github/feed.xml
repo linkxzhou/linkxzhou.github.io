@@ -16,29 +16,60 @@
       <guid>https://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</guid>
       <description>
 
-&lt;h1 id=&#34;hugo搭建github博客过程&#34;&gt;hugo搭建github博客过程&lt;/h1&gt;
+&lt;!-- hugo搭建github博客过程 --&gt;
 
 &lt;h2 id=&#34;安装&#34;&gt;安装&lt;/h2&gt;
 
-&lt;p&gt;&lt;strong&gt;1.安装hugo&lt;/strong&gt;
-hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自己的用户名.Github.io的Github仓库中，实现一个静态站点，一般用于博客或者项目主页等，先从&lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;官网&lt;/a&gt;下载(mac机器上可以直接用brew install hugo)&lt;br&gt;
-安装完成hugo，然后使用huge new site blog-name，进入blog-name可以看到如下结构：&lt;br&gt;
-▸ archetypes/ &lt;br&gt;
-▸ content/ &lt;br&gt;
-▸ layouts/ &lt;br&gt;
-▸ static/ &lt;br&gt;
-  config.toml &lt;br&gt;
-添加about.md到目录中，执行命令：hugo new about.md，产生的about.md存在content文件夹中 &lt;br&gt;
-添加第一条blog文件到目录中，执行命令：hugo new post/你的blog的文件名.md(注意：hugo命令必须在根目录执行，否则会报错) &lt;br&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1.安装hugo&lt;/strong&gt;&lt;br /&gt;
+hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自己的用户名.Github.io的Github仓库中，实现一个静态站点，一般用于博客或者项目主页等，先从&lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;官网&lt;/a&gt;下载(mac机器上可以直接用brew install hugo)
+安装完成hugo，然后使用huge new site blog-name，进入blog-name可以看到如下结构：
+▸ archetypes/&lt;br /&gt;
+▸ content/&lt;br /&gt;
+▸ layouts/&lt;br /&gt;
+▸ static/&lt;br /&gt;
+  config.toml&lt;br /&gt;
+添加about.md到目录中，执行命令：hugo new about.md，产生的about.md存在content文件夹中&lt;br /&gt;
+添加第一条blog文件到目录中，执行命令：hugo new post/你的blog的文件名.md(注意：hugo命令必须在根目录执行，否则会报错)&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;2.安装主题&lt;/strong&gt; &lt;br&gt;
-hugo可以自己配制主题，在blog-name文件夹中创建themes，然后将主题文件夹放到themes中 &lt;br&gt;
-目前hugo的github收录了很多主题列表： &lt;a href=&#34;https://github.com/spf13/hugoThemes，&#34;&gt;https://github.com/spf13/hugoThemes，&lt;/a&gt; 可以git clone 你想要的主题 &lt;br&gt;
-目前我的blog使用的主题：git clone &lt;a href=&#34;https://github.com/coderzh/hugo-pacman-theme&#34;&gt;https://github.com/coderzh/hugo-pacman-theme&lt;/a&gt; &lt;br&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.安装主题&lt;/strong&gt;&lt;br /&gt;
+hugo可以自己配制主题，在blog-name文件夹中创建themes，然后将主题文件夹放到themes中&lt;br /&gt;
+目前hugo的github收录了很多主题列表： &lt;a href=&#34;https://github.com/spf13/hugoThemes，&#34;&gt;https://github.com/spf13/hugoThemes，&lt;/a&gt; 可以git clone 你想要的主题&lt;br /&gt;
+目前我的blog使用的主题：git clone &lt;a href=&#34;https://github.com/coderzh/hugo-pacman-theme&#34;&gt;https://github.com/coderzh/hugo-pacman-theme&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.修改config.toml配置&lt;/strong&gt;&lt;br /&gt;
+hugo的配置可以使用json(config.json)，yaml(config.yaml)和toml(config.toml)，一般都采用toml，本博客配置如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;BaseURL = &amp;quot;http://linkxzhou.github.io/&amp;quot; # 站点的名称
+LanguageCode = &amp;quot;zh-CN&amp;quot; # 使用编码
+HasCJKLanguage = true
+Title = &amp;quot;linkxzhou的博客&amp;quot; # 大标题
+Theme = &amp;quot;none&amp;quot; # 暂无
+pygmentsStyle = &amp;quot;default&amp;quot;
+pygmentsUseClasses = true
+RSSUri = &amp;quot;feed.xml&amp;quot; # rss的订阅数据
+
+[Author]
+  Name = &amp;quot;linkxzhou&amp;quot; # 作者
+
+[Params]
+  AuthorHomepage = &amp;quot;http://linkxzhou.github.io&amp;quot;
+  Author = &amp;quot;linkxzhou&amp;quot;
+  BottomIntroduce = &amp;quot;不负春光，野蛮生长&amp;quot;
+  Description = &amp;quot;&amp;quot;
+  Subtitle = &amp;quot;一个追求技术的偏执者&amp;quot;
+  Imglogo = &amp;quot;img/logo.svg&amp;quot;
+  AuthorImg = &amp;quot;img/author.jpg&amp;quot;
+  # 日期时间格式
+  DateFormat = &amp;quot;2006年01月02日&amp;quot;
+  MonthFormat = &amp;quot;2006年01月&amp;quot;
+  FancyBox = true
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;h2 id=&#34;启动&#34;&gt;启动&lt;/h2&gt;
 
-&lt;pre&gt;&lt;code&gt;hugo server --theme=hugo-pacman-theme --buildDrafts --watch -d ./public
+&lt;p&gt;测试环境查看blog：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;hugo server --theme=hugo-pacman-theme --buildDrafts --watch -d ./dev
 --theme 使用主题，对应到themes文件夹目录
 --buildDrafts 构建暂时不发布的markdown，根据markdown的draft判断(true -- 草稿文件，false -- 生成站点文件)
 --watch 监听文件变化，文件变化后网页上自动变化
@@ -48,21 +79,67 @@ hugo可以自己配制主题，在blog-name文件夹中创建themes，然后将�
 --bind=0.0.0.0 // 绑定ip
 &lt;/code&gt;&lt;/pre&gt;
 
+&lt;p&gt;生成文件到github发布目录命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo hugo server --theme=hugo-pacman-theme --baseUrl=&#39;https://linkxzhou.github.io&#39; --port=443 -d ./public
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;发布文件中犹豫baseUrl需要替换为github路径，所以需要注意几点：
+1.添加baseUrl，如：&amp;ndash;baseUrl=&amp;lsquo;&lt;a href=&#34;https://linkxzhou.github.io&#39;&#34;&gt;https://linkxzhou.github.io&#39;&lt;/a&gt;&lt;br /&gt;
+2.url修改为https，现在github都是https的链接&lt;br /&gt;
+3.设定对应的绑定端口，http设定port=80，https设定port=443&lt;/p&gt;
+
 &lt;h2 id=&#34;发布github&#34;&gt;发布github&lt;/h2&gt;
 
-&lt;p&gt;&lt;strong&gt;1.创建github目录文件&lt;/strong&gt; &lt;br&gt;
-在github中New reository，用户名一定要用：你的注册用户名.github.io，其他无需修改，然后点击Create repository即可 &lt;br&gt;
-&lt;strong&gt;2.github本地文件提交&lt;/strong&gt;
-```
-// 1.设置配置
-git config &amp;ndash;global user.name &amp;ldquo;你的注册用户名&amp;rdquo;
-git config &amp;ndash;global user.email &amp;ldquo;你的邮箱&amp;rdquo;
-git config &amp;ndash;global color.ui auto
+&lt;p&gt;&lt;strong&gt;1.创建github目录文件&lt;/strong&gt;&lt;br /&gt;
+在github中New reository，用户名一定要用：你的注册用户名.github.io，其他无需修改，然后点击Create repository即可&lt;br /&gt;
+&lt;strong&gt;2.github本地文件提交&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 1.设置配置
+git config --global user.name &amp;quot;你的注册用户名&amp;quot;
+git config --global user.email &amp;quot;你的邮箱&amp;quot;
+git config --global color.ui auto
 // 2.设置生成的ssh key
-ssh-keygen -t rsa -C &amp;ldquo;你的邮箱&amp;rdquo;
+ssh-keygen -t rsa -C &amp;quot;你的邮箱&amp;quot;
 要求输入存储id_rsa的目录，接着是输入密码，这个密码可以与github的不同，过程中确认即可，
 最后会出现一个随机图形，说明生成SSH密匙成功，这样需要到刚刚的存储目录下打开id_rsa.pub复制里面的内容，
-到你的github页面上-&amp;gt;点击右上角头像旁三角-&amp;gt;settings-&amp;gt;SSH keys-&amp;gt;add SSH key-&amp;gt;黏贴刚刚复制的内容保存&lt;/p&gt;
+到你的github页面上-&amp;gt;点击右上角头像旁三角-&amp;gt;settings-&amp;gt;SSH keys-&amp;gt;add SSH key-&amp;gt;黏贴刚刚复制的内容保存
+// 3.初始化与提交github
+cd public
+git init
+git remote add origin https://github.com/用户名/用户名.github.io.git
+git add -A
+git commit -m &amp;quot;提交注释&amp;quot;
+git push -u origin master
+// 4.修改文件提交
+git add -A
+git commit -m &amp;quot;提交注释&amp;quot;
+git push -u origin master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意：提交github可能存在一些未知问题，但是一般能找到相应的答案(在此不详细解答)&lt;/p&gt;
+
+&lt;h2 id=&#34;hugo写markdown文件规范&#34;&gt;hugo写markdown文件规范&lt;/h2&gt;
+
+&lt;p&gt;文件头部格式：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+Categories =[&amp;quot;github&amp;quot;]
+Tags = [&amp;quot;github&amp;quot;, &amp;quot;开发者&amp;quot;, &amp;quot;go&amp;quot;]
+date = &amp;quot;2017-02-12T18:20:42+08:00&amp;quot;
+title = &amp;quot;hugo搭建github博客过程&amp;quot;
+description = &amp;quot;111&amp;quot;
++++
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;1.title 文章名称&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;2.description 文章详细介绍&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;3.tag 标签&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;4.categories 文章分类&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在 +++ 与 +++ 中写完规范以后，然后可以添加markdown格式的正文内容(markdown格式文件暂时不介绍，可以参考&lt;a href=&#34;https://segmentfault.com/markdown&#34;&gt;https://segmentfault.com/markdown&lt;/a&gt;)&lt;/p&gt;
 </description>
     </item>
     

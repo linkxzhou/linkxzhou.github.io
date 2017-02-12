@@ -5,14 +5,13 @@
   <title>hugo搭建github博客过程 - linkxzhou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="hugo搭建github博客过程 安装 1.安装hugo hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成">
+  <meta name="description" content="111">
   
   <meta itemprop="name" content="hugo搭建github博客过程 - linkxzhou的博客">
-  <meta itemprop="description" content="hugo搭建github博客过程 安装 1.安装hugo hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成">
+  <meta itemprop="description" content="111">
   <meta itemprop="image" content="https://linkxzhou.github.io/img/author.jpg">
   
-  
-  <meta name="twitter:description" content="">
+  <meta name="twitter:description" content="111" />
   
   <link rel="shortcut icon" href="https://linkxzhou.github.io/img/favicon.ico"/>
   <link rel="apple-touch-icon" href="https://linkxzhou.github.io/apple-touch-icon.png" />
@@ -59,11 +58,7 @@
   <h1 itemprop="name">
       <a href="https://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/" title="hugo搭建github博客过程" itemprop="url">hugo搭建github博客过程</a>
   </h1>
-  <p class="article-author">By
-    
-      <a href="http://linkxzhou.github.io" title=""></a>
-    
-  </p>
+  
   <p class="article-time">
     <time datetime="2017-02-12 18:20:42 &#43;0800 CST" itemprop="datePublished">2017年02月12日</time>
   </p>
@@ -73,29 +68,60 @@
     
     
 
-<h1 id="hugo搭建github博客过程">hugo搭建github博客过程</h1>
+<!-- hugo搭建github博客过程 -->
 
 <h2 id="安装">安装</h2>
 
-<p><strong>1.安装hugo</strong>
-hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自己的用户名.Github.io的Github仓库中，实现一个静态站点，一般用于博客或者项目主页等，先从<a href="https://github.com/spf13/hugo/releases">官网</a>下载(mac机器上可以直接用brew install hugo)<br>
-安装完成hugo，然后使用huge new site blog-name，进入blog-name可以看到如下结构：<br>
-▸ archetypes/ <br>
-▸ content/ <br>
-▸ layouts/ <br>
-▸ static/ <br>
-  config.toml <br>
-添加about.md到目录中，执行命令：hugo new about.md，产生的about.md存在content文件夹中 <br>
-添加第一条blog文件到目录中，执行命令：hugo new post/你的blog的文件名.md(注意：hugo命令必须在根目录执行，否则会报错) <br></p>
+<p><strong>1.安装hugo</strong><br />
+hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自己的用户名.Github.io的Github仓库中，实现一个静态站点，一般用于博客或者项目主页等，先从<a href="https://github.com/spf13/hugo/releases">官网</a>下载(mac机器上可以直接用brew install hugo)
+安装完成hugo，然后使用huge new site blog-name，进入blog-name可以看到如下结构：
+▸ archetypes/<br />
+▸ content/<br />
+▸ layouts/<br />
+▸ static/<br />
+  config.toml<br />
+添加about.md到目录中，执行命令：hugo new about.md，产生的about.md存在content文件夹中<br />
+添加第一条blog文件到目录中，执行命令：hugo new post/你的blog的文件名.md(注意：hugo命令必须在根目录执行，否则会报错)</p>
 
-<p><strong>2.安装主题</strong> <br>
-hugo可以自己配制主题，在blog-name文件夹中创建themes，然后将主题文件夹放到themes中 <br>
-目前hugo的github收录了很多主题列表： <a href="https://github.com/spf13/hugoThemes，">https://github.com/spf13/hugoThemes，</a> 可以git clone 你想要的主题 <br>
-目前我的blog使用的主题：git clone <a href="https://github.com/coderzh/hugo-pacman-theme">https://github.com/coderzh/hugo-pacman-theme</a> <br></p>
+<p><strong>2.安装主题</strong><br />
+hugo可以自己配制主题，在blog-name文件夹中创建themes，然后将主题文件夹放到themes中<br />
+目前hugo的github收录了很多主题列表： <a href="https://github.com/spf13/hugoThemes，">https://github.com/spf13/hugoThemes，</a> 可以git clone 你想要的主题<br />
+目前我的blog使用的主题：git clone <a href="https://github.com/coderzh/hugo-pacman-theme">https://github.com/coderzh/hugo-pacman-theme</a></p>
+
+<p><strong>3.修改config.toml配置</strong><br />
+hugo的配置可以使用json(config.json)，yaml(config.yaml)和toml(config.toml)，一般都采用toml，本博客配置如下：</p>
+
+<pre><code>BaseURL = &quot;http://linkxzhou.github.io/&quot; # 站点的名称
+LanguageCode = &quot;zh-CN&quot; # 使用编码
+HasCJKLanguage = true
+Title = &quot;linkxzhou的博客&quot; # 大标题
+Theme = &quot;none&quot; # 暂无
+pygmentsStyle = &quot;default&quot;
+pygmentsUseClasses = true
+RSSUri = &quot;feed.xml&quot; # rss的订阅数据
+
+[Author]
+  Name = &quot;linkxzhou&quot; # 作者
+
+[Params]
+  AuthorHomepage = &quot;http://linkxzhou.github.io&quot;
+  Author = &quot;linkxzhou&quot;
+  BottomIntroduce = &quot;不负春光，野蛮生长&quot;
+  Description = &quot;&quot;
+  Subtitle = &quot;一个追求技术的偏执者&quot;
+  Imglogo = &quot;img/logo.svg&quot;
+  AuthorImg = &quot;img/author.jpg&quot;
+  # 日期时间格式
+  DateFormat = &quot;2006年01月02日&quot;
+  MonthFormat = &quot;2006年01月&quot;
+  FancyBox = true
+</code></pre>
 
 <h2 id="启动">启动</h2>
 
-<pre><code>hugo server --theme=hugo-pacman-theme --buildDrafts --watch -d ./public
+<p>测试环境查看blog：</p>
+
+<pre><code>hugo server --theme=hugo-pacman-theme --buildDrafts --watch -d ./dev
 --theme 使用主题，对应到themes文件夹目录
 --buildDrafts 构建暂时不发布的markdown，根据markdown的draft判断(true -- 草稿文件，false -- 生成站点文件)
 --watch 监听文件变化，文件变化后网页上自动变化
@@ -105,21 +131,67 @@ hugo可以自己配制主题，在blog-name文件夹中创建themes，然后将�
 --bind=0.0.0.0 // 绑定ip
 </code></pre>
 
+<p>生成文件到github发布目录命令：</p>
+
+<pre><code>sudo hugo server --theme=hugo-pacman-theme --baseUrl='https://linkxzhou.github.io' --port=443 -d ./public
+</code></pre>
+
+<p>发布文件中犹豫baseUrl需要替换为github路径，所以需要注意几点：
+1.添加baseUrl，如：&ndash;baseUrl=&lsquo;<a href="https://linkxzhou.github.io'">https://linkxzhou.github.io'</a><br />
+2.url修改为https，现在github都是https的链接<br />
+3.设定对应的绑定端口，http设定port=80，https设定port=443</p>
+
 <h2 id="发布github">发布github</h2>
 
-<p><strong>1.创建github目录文件</strong> <br>
-在github中New reository，用户名一定要用：你的注册用户名.github.io，其他无需修改，然后点击Create repository即可 <br>
-<strong>2.github本地文件提交</strong>
-```
-// 1.设置配置
-git config &ndash;global user.name &ldquo;你的注册用户名&rdquo;
-git config &ndash;global user.email &ldquo;你的邮箱&rdquo;
-git config &ndash;global color.ui auto
+<p><strong>1.创建github目录文件</strong><br />
+在github中New reository，用户名一定要用：你的注册用户名.github.io，其他无需修改，然后点击Create repository即可<br />
+<strong>2.github本地文件提交</strong></p>
+
+<pre><code>// 1.设置配置
+git config --global user.name &quot;你的注册用户名&quot;
+git config --global user.email &quot;你的邮箱&quot;
+git config --global color.ui auto
 // 2.设置生成的ssh key
-ssh-keygen -t rsa -C &ldquo;你的邮箱&rdquo;
+ssh-keygen -t rsa -C &quot;你的邮箱&quot;
 要求输入存储id_rsa的目录，接着是输入密码，这个密码可以与github的不同，过程中确认即可，
 最后会出现一个随机图形，说明生成SSH密匙成功，这样需要到刚刚的存储目录下打开id_rsa.pub复制里面的内容，
-到你的github页面上-&gt;点击右上角头像旁三角-&gt;settings-&gt;SSH keys-&gt;add SSH key-&gt;黏贴刚刚复制的内容保存</p>
+到你的github页面上-&gt;点击右上角头像旁三角-&gt;settings-&gt;SSH keys-&gt;add SSH key-&gt;黏贴刚刚复制的内容保存
+// 3.初始化与提交github
+cd public
+git init
+git remote add origin https://github.com/用户名/用户名.github.io.git
+git add -A
+git commit -m &quot;提交注释&quot;
+git push -u origin master
+// 4.修改文件提交
+git add -A
+git commit -m &quot;提交注释&quot;
+git push -u origin master
+</code></pre>
+
+<p>注意：提交github可能存在一些未知问题，但是一般能找到相应的答案(在此不详细解答)</p>
+
+<h2 id="hugo写markdown文件规范">hugo写markdown文件规范</h2>
+
+<p>文件头部格式：</p>
+
+<pre><code>+++
+Categories =[&quot;github&quot;]
+Tags = [&quot;github&quot;, &quot;开发者&quot;, &quot;go&quot;]
+date = &quot;2017-02-12T18:20:42+08:00&quot;
+title = &quot;hugo搭建github博客过程&quot;
+description = &quot;111&quot;
++++
+</code></pre>
+
+<ul>
+<li>1.title 文章名称<br /></li>
+<li>2.description 文章详细介绍<br /></li>
+<li>3.tag 标签<br /></li>
+<li>4.categories 文章分类</li>
+</ul>
+
+<p>在 +++ 与 +++ 中写完规范以后，然后可以添加markdown格式的正文内容(markdown格式文件暂时不介绍，可以参考<a href="https://segmentfault.com/markdown">https://segmentfault.com/markdown</a>)</p>
 
 	</div>
   <footer class="article-footer clearfix">
@@ -174,6 +246,8 @@ ssh-keygen -t rsa -C &ldquo;你的邮箱&rdquo;
     
     <li><a href="https://linkxzhou.github.io/categories/github" title="github">github<sup>1</sup></a></li>
     
+    <li><a href="https://linkxzhou.github.io/categories/%e7%bd%91%e7%bb%9c" title="网络">网络<sup>1</sup></a></li>
+    
   </ul>
 </div>
 
@@ -191,6 +265,10 @@ ssh-keygen -t rsa -C &ldquo;你的邮箱&rdquo;
       
 			<li><a href="https://linkxzhou.github.io/tags/%e5%bc%80%e5%8f%91%e8%80%85" title="开发者">开发者<sup>1</sup></a></li>
       
+			<li><a href="https://linkxzhou.github.io/tags/%e5%bc%b1%e7%bd%91" title="弱网">弱网<sup>1</sup></a></li>
+      
+			<li><a href="https://linkxzhou.github.io/tags/%e6%b5%8b%e8%af%95" title="测试">测试<sup>1</sup></a></li>
+      
 		</ul>
 </div>
 
@@ -203,7 +281,7 @@ ssh-keygen -t rsa -C &ldquo;你的邮箱&rdquo;
       
       
       <li class="archive-list-item">
-        <a class="archive-list-link" href="https://linkxzhou.github.io/post/#2017-02">2017年02月</a><span class="archive-list-count">1</span>
+        <a class="archive-list-link" href="https://linkxzhou.github.io/post/#2017-02">2017年02月</a><span class="archive-list-count">2</span>
       </li>
       
     </ul>
@@ -222,6 +300,10 @@ ssh-keygen -t rsa -C &ldquo;你的邮箱&rdquo;
     <a href="https://linkxzhou.github.io/tags/go" style="font-size: 12px;">go</a>
     
     <a href="https://linkxzhou.github.io/tags/%e5%bc%80%e5%8f%91%e8%80%85" style="font-size: 12px;">开发者</a>
+    
+    <a href="https://linkxzhou.github.io/tags/%e5%bc%b1%e7%bd%91" style="font-size: 12px;">弱网</a>
+    
+    <a href="https://linkxzhou.github.io/tags/%e6%b5%8b%e8%af%95" style="font-size: 12px;">测试</a>
     
   </div>
 </div>
