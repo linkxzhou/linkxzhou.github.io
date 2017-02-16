@@ -11,7 +11,7 @@
     <item>
       <title>hugo搭建github博客过程</title>
       <link>https://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</link>
-      <pubDate>Sun, 12 Feb 2017 18:20:42 +0800</pubDate>
+      <pubDate>Wed, 12 Oct 2016 18:20:42 +0800</pubDate>
       
       <guid>https://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</guid>
       <description>
@@ -81,7 +81,7 @@ RSSUri = &amp;quot;feed.xml&amp;quot; # rss的订阅数据
 
 &lt;p&gt;生成文件到github发布目录命令：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;sudo hugo server --theme=hugo-pacman-theme --baseUrl=&#39;https://linkxzhou.github.io&#39; --port=443 -d ./public
+&lt;pre&gt;&lt;code&gt;sudo hugo server --theme=hugo-pacman-theme --baseUrl=&#39;https://linkxzhou.github.io&#39; --watch --port=443 -d ./public
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;发布文件中犹豫baseUrl需要替换为github路径，所以需要注意几点：

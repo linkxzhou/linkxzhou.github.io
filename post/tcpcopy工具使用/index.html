@@ -2,17 +2,16 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>hugo搭建github博客过程 - linkxzhou的博客</title>
+  <title>tcpcopy工具使用 - linkxzhou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="安装 1.安装hugo hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自">
+  <meta name="description" content="111">
   
-  <meta itemprop="name" content="hugo搭建github博客过程 - linkxzhou的博客">
-  <meta itemprop="description" content="安装 1.安装hugo hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自">
+  <meta itemprop="name" content="tcpcopy工具使用 - linkxzhou的博客">
+  <meta itemprop="description" content="111">
   <meta itemprop="image" content="https://linkxzhou.github.io/img/author.jpg">
   
-  
-  <meta name="twitter:description" content="">
+  <meta name="twitter:description" content="111" />
   
   <link rel="shortcut icon" href="https://linkxzhou.github.io/img/favicon.ico"/>
   <link rel="apple-touch-icon" href="https://linkxzhou.github.io/apple-touch-icon.png" />
@@ -57,11 +56,11 @@
 	<article itemprop="articleBody">
     <header class="article-info clearfix">
   <h1 itemprop="name">
-      <a href="https://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/" title="hugo搭建github博客过程" itemprop="url">hugo搭建github博客过程</a>
+      <a href="https://linkxzhou.github.io/post/tcpcopy%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" title="tcpcopy工具使用" itemprop="url">tcpcopy工具使用</a>
   </h1>
   
   <p class="article-time">
-    <time datetime="2016-10-12 18:20:42 &#43;0800 CST" itemprop="datePublished">2016年10月12日</time>
+    <time datetime="2017-01-12 18:20:42 &#43;0800 CST" itemprop="datePublished">2017年01月12日</time>
   </p>
 </header>
 
@@ -69,130 +68,121 @@
     
     
 
-<!-- hugo搭建github博客过程 -->
+<h3 id="intercept的使用-10-210-252-77">intercept的使用（10.210.252.77）</h3>
 
-<h2 id="安装">安装</h2>
+<p>./intercept -F &lsquo;tcp and port 8030&rsquo; -d</p>
 
-<p><strong>1.安装hugo</strong><br />
-hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自己的用户名.Github.io的Github仓库中，实现一个静态站点，一般用于博客或者项目主页等，先从<a href="https://github.com/spf13/hugo/releases">官网</a>下载(mac机器上可以直接用brew install hugo)
-安装完成hugo，然后使用huge new site blog-name，进入blog-name可以看到如下结构：
-▸ archetypes/<br />
-▸ content/<br />
-▸ layouts/<br />
-▸ static/<br />
-  config.toml<br />
-添加about.md到目录中，执行命令：hugo new about.md，产生的about.md存在content文件夹中<br />
-添加第一条blog文件到目录中，执行命令：hugo new post/你的blog的文件名.md(注意：hugo命令必须在根目录执行，否则会报错)</p>
+<h3 id="tcpcopy的使用-10-191-139-25">tcpcopy的使用（10.191.139.25）</h3>
 
-<p><strong>2.安装主题</strong><br />
-hugo可以自己配制主题，在blog-name文件夹中创建themes，然后将主题文件夹放到themes中<br />
-目前hugo的github收录了很多主题列表： <a href="https://github.com/spf13/hugoThemes，">https://github.com/spf13/hugoThemes，</a> 可以git clone 你想要的主题<br />
-目前我的blog使用的主题：git clone <a href="https://github.com/coderzh/hugo-pacman-theme">https://github.com/coderzh/hugo-pacman-theme</a></p>
+<p>./tcpcopy -x 8030-10.217.252.221:8030 -s 10.210.252.77 -c 192.168.100.x -d
+###路由规则信息（10.217.252.221）
+route add -host 10.206.1.50 gw 10.210.252.77
+在测试服务器上设置路由：
+route add -net 192.168.100.0 netmask 255.255.255.0 gw 10.210.252.77</p>
 
-<p><strong>3.修改config.toml配置</strong><br />
-hugo的配置可以使用json(config.json)，yaml(config.yaml)和toml(config.toml)，一般都采用toml，本博客配置如下：</p>
+<p>###tcpcopy使用过程出现rst问题
+1.rst包出现的请求出现对端端口没有打开，对端会回复rst或者不回复
+2.</p>
 
-<pre><code>BaseURL = &quot;http://linkxzhou.github.io/&quot; # 站点的名称
-LanguageCode = &quot;zh-CN&quot; # 使用编码
-HasCJKLanguage = true
-Title = &quot;linkxzhou的博客&quot; # 大标题
-Theme = &quot;none&quot; # 暂无
-pygmentsStyle = &quot;default&quot;
-pygmentsUseClasses = true
-RSSUri = &quot;feed.xml&quot; # rss的订阅数据
+<p>###配置过程
+（1）安装：
+<a href="http://www.tcpdump.org/release/libpcap-1.7.4.tar.gz">http://www.tcpdump.org/release/libpcap-1.7.4.tar.gz</a>
+<a href="http://www.netfilter.org/projects/libnfnetlink/files/libnfnetlink-1.0.1.tar.bz2">http://www.netfilter.org/projects/libnfnetlink/files/libnfnetlink-1.0.1.tar.bz2</a>
+<a href="http://www.netfilter.org/projects/libmnl/files/libmnl-1.0.3.tar.bz2">http://www.netfilter.org/projects/libmnl/files/libmnl-1.0.3.tar.bz2</a>
+<a href="http://www.netfilter.org/projects/libnetfilter_queue/files/libnetfilter_queue-1.0.2.tar.bz2">http://www.netfilter.org/projects/libnetfilter_queue/files/libnetfilter_queue-1.0.2.tar.bz2</a>
+（2）配置：
+如果提示：
+checking for LIBNFNETLINK&hellip; no
+configure: error: Package requirements (libnfnetlink &gt;= 0.0.41) were not met:
+使用如下配置
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+echo &ldquo;/usr/local/lib&rdquo; &gt;&gt; /etc/ld.so.conf
+ldconfig
+（3）安装intercept
+./configure &ndash;traditional &ndash;nfqueue
+make
+make install
+启动./intercept -d
+如果提示：./intercept: error while loading shared libraries: libnetfilter_queue.so.1: cannot open shared object file: No such file or directory，需要export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+（4）启动
+在测试服务器上设置：
+启动iptables监听端口14002的出流量转向到NFQUEUE，供intercept调用
+iptables -I OUTPUT -p tcp &ndash;sport 80 -j QUEUE
+（5）启动线上服务器的tcpcopy
+./tcpcopy -x 8031-10.217.252.221:8030 -s 10.217.252.221 -d
+（6）结束tcpcopy使用
+1.先要关闭tcpcopy和intercept；
+2.查看iptables -L -n &ndash;line-number；
+3.iptables -D OUTPUT 上面查看对应的OUTPUT的line number</p>
 
-[Author]
-  Name = &quot;linkxzhou&quot; # 作者
+<p>###tcpcopy原理使用&ndash;代码分析
+Tcpcopy拷贝一次流量访问的步骤如下：
+①一个访问到达线上前端机；
+②socket包在ip层被拷贝了一份传给tcpcopy进程；
+③tcpcopy修改包的目的及源地址，发给测试前端机；
+④拷贝的包到达测试前端机；
+⑤测试前端机的nginx处理访问，并返回结果；
+⑥返回结果在ip层被截获、丢弃，由intercpetion拷贝返回结果的ip header返回；
+⑦ip header被发送给线上前端机的tcpcopy进程；</p>
 
-[Params]
-  AuthorHomepage = &quot;http://linkxzhou.github.io&quot;
-  Author = &quot;linkxzhou&quot;
-  BottomIntroduce = &quot;不负春光，野蛮生长&quot;
-  Description = &quot;&quot;
-  Subtitle = &quot;一个追求技术的偏执者&quot;
-  Imglogo = &quot;img/logo.svg&quot;
-  AuthorImg = &quot;img/author.jpg&quot;
-  # 日期时间格式
-  DateFormat = &quot;2006年01月02日&quot;
-  MonthFormat = &quot;2006年01月&quot;
-  FancyBox = true
-</code></pre>
+<p>1) 首先，在链路层或者IP层，在把包交到上一层之前，系统会检查有没进程创建了socket(AF_PACKET,SOCK_DGRAM,…)
+或socket(AF_INET,SOCK_RAW,…)等类型的套接字（即原始套接字sock_raw），如果有，这个包就会被复制一份并发送到这个socket的缓冲区；
+tcpcopy就是通过这种方式来复制访问流量的。上述的两种抓包方式，前者工作在数据链路层，后者工作在IP层；
+在tcpcopy中不同版本所使用的抓包函数不同，在0.3版本中是：
+int sock = socket(AF_PACKET,SOCK_RAW,htons(ETH_P_IP));
+而在0.4版本中，用的是：
+int sock = socket(AF_INET,SOCK_RAW,IPPROTO_TCP);
+以上两个函数分别工作在链路层和IP层，前者会把进来和出去的包都抓取到，后者只  抓取到进来的包。
+2）Tcpcopy在发送拷贝的数据包的时候，使用了如下socket：
+sock = socket(AF_INET, SOCK_RAW,IPPROTO_RAW);
+并对这个socket设置了IP_HDRINCL：
+setsockopt(sock, IPPROTO_IP, IP_HDRINCL, &amp;n, sizeof(n));
+因此网络层不会再增加ip header. 发送之前更改了包的目的ip和端口：
+tcp_header-&gt;dest = remote_port;
+ip_header-&gt;daddr = remote_ip;
+最后调用sendto函数发送包到测试前端机：
+send_len = sendto(sock,(char *)ip_header,tot_len,0,
+(struct sockaddr *)&amp;toaddr,sizeof(toaddr));
+3）在测试前端机上加载了ip_queue模块，并设置iptables规则：
+iptables -I OUTPUT -p tcp –sport 80 -j QUEUE
+复制的访问流量到达测试前端机上的nginx，nginx处理并返回结果，这个结果包在IP层会被前面所设置的iptables规则匹配发往目标（target）QUEUE;
+而QUEUE是由ip_queue模块实现。下一步这个匹配包就会被内核经过netlink socket发往用户空间的程序（在这是tcpcopy的服务端interception进程）;
+netlink socket是内核与用户进程之间的一种通信机制，是网络应用程序与内核通信的最常用的接口，可以用来配置网络的各个方面（比如包的过滤）;
+interception用如下方式创建netlink socket：
+int sock = socket(AF_NETLINK,SOCK_RAW,NETLINK_FIREWALL);
+NETLINK_FIREWALL协议有三种消息类型：IPQM_MODE,IPQM_PACKET,IPQM_VERDICT.
+内核通过一个IPQM_PACKET消息将刚才截获的返回结果包发送到interception,interception给内核发送一个IPQM_VERDICT消息告诉内核对这个包的裁决结果（DROP,ACCEPT,etc.）。
+tcpcopy通过这样的办法将测试前端机上nginx返回的结果截获丢弃，并由interception返回一个ip header.相应代码实现如下：
+拷贝结果包的ip header，发送：
+struct receiver_msg_st msg;
+&hellip;
+memset(msg,0,sizeof(struct receiver_msg_st));
+memcpy((void *)(msg.ip_header),ip_header,sizeof(struct iphdr));
+memcpy((void *)(msg.tcp_header),tcp_header,sizeof(struct tcphdr));
+&hellip;
+send(sock,(const void *)msg,sizeof(struct receiver_msg_st),0);</p>
 
-<h2 id="启动">启动</h2>
-
-<p>测试环境查看blog：</p>
-
-<pre><code>hugo server --theme=hugo-pacman-theme --buildDrafts --watch -d ./dev
---theme 使用主题，对应到themes文件夹目录
---buildDrafts 构建暂时不发布的markdown，根据markdown的draft判断(true -- 草稿文件，false -- 生成站点文件)
---watch 监听文件变化，文件变化后网页上自动变化
--d 目标文件 生成对应的发布github目录文件‘
-// 其他命令
---port=80 // 绑定端口
---bind=0.0.0.0 // 绑定ip
-</code></pre>
-
-<p>生成文件到github发布目录命令：</p>
-
-<pre><code>sudo hugo server --theme=hugo-pacman-theme --baseUrl='https://linkxzhou.github.io' --watch --port=443 -d ./public
-</code></pre>
-
-<p>发布文件中犹豫baseUrl需要替换为github路径，所以需要注意几点：
-1.添加baseUrl，如：&ndash;baseUrl=&lsquo;<a href="https://linkxzhou.github.io'">https://linkxzhou.github.io'</a><br />
-2.url修改为https，现在github都是https的链接<br />
-3.设定对应的绑定端口，http设定port=80，https设定port=443</p>
-
-<h2 id="发布github">发布github</h2>
-
-<p><strong>1.创建github目录文件</strong><br />
-在github中New reository，用户名一定要用：你的注册用户名.github.io，其他无需修改，然后点击Create repository即可<br />
-<strong>2.github本地文件提交</strong></p>
-
-<pre><code>// 1.设置配置
-git config --global user.name &quot;你的注册用户名&quot;
-git config --global user.email &quot;你的邮箱&quot;
-git config --global color.ui auto
-// 2.设置生成的ssh key
-ssh-keygen -t rsa -C &quot;你的邮箱&quot;
-要求输入存储id_rsa的目录，接着是输入密码，这个密码可以与github的不同，过程中确认即可，
-最后会出现一个随机图形，说明生成SSH密匙成功，这样需要到刚刚的存储目录下打开id_rsa.pub复制里面的内容，
-到你的github页面上-&gt;点击右上角头像旁三角-&gt;settings-&gt;SSH keys-&gt;add SSH key-&gt;黏贴刚刚复制的内容保存
-// 3.初始化与提交github
-cd public
-git init
-git remote add origin https://github.com/用户名/用户名.github.io.git
-git add -A
-git commit -m &quot;提交注释&quot;
-git push -u origin master
-// 4.修改文件提交
-git add -A
-git commit -m &quot;提交注释&quot;
-git push -u origin master
-</code></pre>
-
-<p>注意：提交github可能存在一些未知问题，但是一般能找到相应的答案(在此不详细解答)</p>
-
-<h2 id="hugo写markdown文件规范">hugo写markdown文件规范</h2>
-
-<p>文件头部格式：</p>
-
-<pre><code>+++
-Categories =[&quot;github&quot;]
-Tags = [&quot;github&quot;, &quot;开发者&quot;, &quot;go&quot;]
-date = &quot;2017-02-12T18:20:42+08:00&quot;
-title = &quot;hugo搭建github博客过程&quot;
-description = &quot;111&quot;
-+++
-</code></pre>
-
-<ul>
-<li>1.title 文章名称<br /></li>
-<li>2.description 文章详细介绍<br /></li>
-<li>3.tag 标签<br /></li>
-<li>4.categories 文章分类</li>
-</ul>
-
-<p>在 +++ 与 +++ 中写完规范以后，然后可以添加markdown格式的正文内容(markdown格式文件暂时不介绍，可以参考<a href="https://segmentfault.com/markdown">https://segmentfault.com/markdown</a>)</p>
+<p>interception向内核发送IPQM_VERDICT消息报告裁决结果：
+struct nlmsghdr* nl_header=(struct nlmsghdr*)buffer;
+struct ipq_verdict_msg *ver_data = NULL;
+struct sockaddr_nl addr;
+nl_header-&gt;nlmsg_type=IPQM_VERDICT;
+nl_header-&gt;nlmsg_len=NLMSG_LENGTH(sizeof(struct ipq_verdict_msg));
+nl_header-&gt;nlmsg_flags=(NLM_F_REQUEST);
+nl_header-&gt;nlmsg_pid=getpid();
+nl_header-&gt;nlmsg_seq=seq++;
+ver_data=(struct ipq_verdict_msg *)NLMSG_DATA(nl_header);
+ver_data-&gt;value=NF_DROP; /<em>如果要accept这个包，则设为NF_ACCEPT）</em>/
+ver_data-&gt;id=packet_id;
+memset(addr, 0, sizeof(addr));
+addr.nl_family = AF_NETLINK;
+addr.nl_pid = 0;
+addr.nl_groups = 0;
+sendto(firewall_sock,(void *)nl_header,nl_header-&gt;nlmsg_len,0,
+(struct sockaddr *)-&gt;addr,sizeof(struct sockaddr_nl));
+内核接收到这个包后将packet_id这个包drop或accept;
+在后文中可以看到从0.4版本开始的tcpcopy利用这个特点保留了一个允许访问的ip列表，因为默认情况下访问测试前端机上nginx服务所得到的结果会在ip层被drop掉，造成在80端口上无法访问nginx;
+有了这个允许ip列表，即使是刷了iptables规则、起了interception进程，在某些机器上也是可以正常访问测试前端机上的nginx服务的。</p>
 
 	</div>
   <footer class="article-footer clearfix">
@@ -201,11 +191,9 @@ description = &quot;111&quot;
 <div class="article-tags">
   <span></span>
   
-  <a href="https://linkxzhou.github.io/tags/github">github</a>
+  <a href="https://linkxzhou.github.io/tags/tcpcopy">tcpcopy</a>
   
-  <a href="https://linkxzhou.github.io/tags/%E5%BC%80%E5%8F%91%E8%80%85">开发者</a>
-  
-  <a href="https://linkxzhou.github.io/tags/go">go</a>
+  <a href="https://linkxzhou.github.io/tags/%E6%B5%8B%E8%AF%95">测试</a>
   
 </div>
 
@@ -216,14 +204,14 @@ description = &quot;111&quot;
 <div class="article-categories">
   <span></span>
   
-  <a class="article-category-link" href="https://linkxzhou.github.io/categories/github">github</a>
+  <a class="article-category-link" href="https://linkxzhou.github.io/categories/%E7%BD%91%E7%BB%9C">网络</a>
   
 </div>
 
 
 
   <div class="article-share" id="share">
-    <div data-url="https://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/" data-title="hugo搭建github博客过程" data-tsina="" class="share clearfix">
+    <div data-url="https://linkxzhou.github.io/post/tcpcopy%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" data-title="tcpcopy工具使用" data-tsina="" class="share clearfix">
     </div>
   </div>
 </footer>
@@ -284,7 +272,12 @@ description = &quot;111&quot;
       
       
       <li class="archive-list-item">
-        <a class="archive-list-link" href="https://linkxzhou.github.io/post/#2016-12">2016年12月</a><span class="archive-list-count">2</span>
+        <a class="archive-list-link" href="https://linkxzhou.github.io/post/#2017-01">2017年01月</a><span class="archive-list-count">1</span>
+      </li>
+      
+      
+      <li class="archive-list-item">
+        <a class="archive-list-link" href="https://linkxzhou.github.io/post/#2016-12">2016年12月</a><span class="archive-list-count">1</span>
       </li>
       
       

@@ -2,13 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</loc>
-    <lastmod>2017-02-12T18:20:42+08:00</lastmod>
+    <loc>https://linkxzhou.github.io/post/tcpcopy%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/</loc>
+    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io/post/%E5%BC%B1%E7%BD%91%E6%B5%8B%E8%AF%95--%E7%BD%91%E7%BB%9C%E7%8E%AF%E5%A2%83%E6%9E%84%E5%BB%BA/</loc>
-    <lastmod>2017-01-12T20:20:42+08:00</lastmod>
+    <lastmod>2016-12-01T20:20:42+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://linkxzhou.github.io/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/</loc>
+    <lastmod>2016-10-12T18:20:42+08:00</lastmod>
   </url>
   
   <url>
@@ -17,26 +22,26 @@
   </url>
   
   <url>
-    <loc>https://linkxzhou.github.io/categories/github/</loc>
-    <lastmod>2017-02-12T18:20:42+08:00</lastmod>
+    <loc>https://linkxzhou.github.io/tags/github/</loc>
+    <lastmod>2016-10-12T18:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://linkxzhou.github.io/tags/github/</loc>
-    <lastmod>2017-02-12T18:20:42+08:00</lastmod>
+    <loc>https://linkxzhou.github.io/categories/github/</loc>
+    <lastmod>2016-10-12T18:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io/tags/go/</loc>
-    <lastmod>2017-02-12T18:20:42+08:00</lastmod>
+    <lastmod>2016-10-12T18:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io/post/</loc>
-    <lastmod>2017-02-12T18:20:42+08:00</lastmod>
+    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -46,32 +51,38 @@
   </url>
   
   <url>
+    <loc>https://linkxzhou.github.io/tags/tcpcopy/</loc>
+    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io/</loc>
-    <lastmod>2017-02-12T18:20:42+08:00</lastmod>
+    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io/tags/%E5%BC%80%E5%8F%91%E8%80%85/</loc>
-    <lastmod>2017-02-12T18:20:42+08:00</lastmod>
+    <lastmod>2016-10-12T18:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io/tags/%E5%BC%B1%E7%BD%91/</loc>
-    <lastmod>2017-01-12T20:20:42+08:00</lastmod>
+    <lastmod>2016-12-01T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io/tags/%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2017-01-12T20:20:42+08:00</lastmod>
+    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io/categories/%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2017-01-12T20:20:42+08:00</lastmod>
+    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
