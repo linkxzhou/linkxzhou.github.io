@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://linkxzhou.github.io/post/Bitcask%E5%AD%98%E5%82%A8/</loc>
+    <lastmod>2017-03-12T20:20:42+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io/post/tcpcopy%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2016-12-12T18:20:42+08:00</lastmod>
   </url>
@@ -41,7 +46,7 @@
   
   <url>
     <loc>https://linkxzhou.github.io/post/</loc>
-    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
+    <lastmod>2017-03-12T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -58,7 +63,13 @@
   
   <url>
     <loc>https://linkxzhou.github.io/</loc>
-    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
+    <lastmod>2017-03-12T20:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://linkxzhou.github.io/tags/%E5%AD%98%E5%82%A8/</loc>
+    <lastmod>2017-03-12T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -77,6 +88,18 @@
   <url>
     <loc>https://linkxzhou.github.io/tags/%E6%B5%8B%E8%AF%95/</loc>
     <lastmod>2016-12-12T18:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://linkxzhou.github.io/tags/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2017-03-12T20:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://linkxzhou.github.io/categories/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2017-03-12T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
