@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://linkxzhou.github.io/post/%E7%90%86%E8%A7%A3HTTP%E4%B9%8BContent-Type/</loc>
+    <lastmod>2017-04-02T20:20:42+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io/post/%E8%AF%BB%3Clinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%3E%E6%80%BB%E7%BB%93%28%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%AF%87%29/</loc>
     <lastmod>2017-04-01T20:20:42+08:00</lastmod>
   </url>
@@ -50,8 +55,14 @@
   </url>
   
   <url>
+    <loc>https://linkxzhou.github.io/tags/http/</loc>
+    <lastmod>2017-04-02T20:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io/post/</loc>
-    <lastmod>2017-04-01T20:20:42+08:00</lastmod>
+    <lastmod>2017-04-02T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -74,7 +85,7 @@
   
   <url>
     <loc>https://linkxzhou.github.io/</loc>
-    <lastmod>2017-04-01T20:20:42+08:00</lastmod>
+    <lastmod>2017-04-02T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -116,13 +127,13 @@
   
   <url>
     <loc>https://linkxzhou.github.io/tags/%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2017-04-01T20:20:42+08:00</lastmod>
+    <lastmod>2017-04-02T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io/categories/%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2017-04-01T20:20:42+08:00</lastmod>
+    <lastmod>2017-04-02T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   

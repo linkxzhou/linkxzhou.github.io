@@ -9,6 +9,97 @@
     <atom:link href="https://linkxzhou.github.io/categories/%E7%BD%91%E7%BB%9C/feed/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>理解HTTP之Content-Type</title>
+      <link>https://linkxzhou.github.io/post/%E7%90%86%E8%A7%A3HTTP%E4%B9%8BContent-Type/</link>
+      <pubDate>Sun, 02 Apr 2017 20:20:42 +0800</pubDate>
+      
+      <guid>https://linkxzhou.github.io/post/%E7%90%86%E8%A7%A3HTTP%E4%B9%8BContent-Type/</guid>
+      <description>
+
+&lt;p&gt;在http的规范中有OPTIONS，GET，HEAD，POST，PUT，DELETE，TRACE，CONNECT，那么发送这些类型的请求会在头部携带Content-Type，本文重点讲述与此相关内容，Content-Type属性指定请求和响应的HTTP内容类型，如果未指定Content-Type，默认为text/html(如果想具体查看所有的ContentType，可以查找nginx中的mime.typs)，下面就讲述三种主要的Content-Type。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-application-x-www-form-urlencoded类型&#34;&gt;1.application/x-www-form-urlencoded类型&lt;/h3&gt;
+
+&lt;p&gt;application/x-www-form-urlencoded类型会把表单中发送的数据编码为&amp;rdquo;名称=值&amp;rdquo;对，浏览器把form数据封装到http body中，然后发送到服务器，其中用curl请求www.baidu.com对应的header：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;POST / HTTP/1.1
+Host: www.baidu.com
+User-Agent: curl/7.51.0
+Accept: */*
+Content-Length: 897
+Content-Type: application/x-www-form-urlencoded
+
+*******raw body*****
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;服务端收到的POST中的数据是数组，其中raw body数据如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;wd=&amp;amp;from=pc_web&amp;amp;rf=3&amp;amp;hisdata=%5B%7B%22time%22%3A1491282408%2C%22
+kw%22%3A%22hilo%20%E9%BA%BB%E5%B0%86%22%7D%2C%7B%22time%22%3A149
+1282424%2C%22kw%22%3A%22hilo%E5%BC%95%E6%93%8E%20%E9%BA%BB%E5%B0
+%86%22%7D%2C%7B%22time%22%3A1491282435%2C%22kw%22%3A%22hilo%E5%B
+C%95%E6%93%8E%20%E6%96%97%E5%9C%B0%E4%B8%BB%22%7D%2C%7B%22time%2
+2%3A1491282451%2C%22kw%22%3A%22html5%20%E6%96%97%E5%9C%B0%E4%B8%
+BB%22%7D%2C%7B%22time%22%3A1491282620%2C%22kw%22%3A%22hilo%E5%BC
+%95%E6%93%8E%22%7D%2C%7B%22time%22%3A1491282626%2C%22kw%22%3A%22
+hilo%22%2C%22fq%22%3A2%7D%2C%7B%22time%22%3A1491356796%2C%22kw%2
+2%3A%22mac%20%E6%9F%A5mac%22%7D%2C%7B%22time%22%3A1491405511%2C%
+22kw%22%3A%22the%20definitive%20guide%20to%20sqlite%22%7D%2C%7B%
+22time%22%3A1491405600%2C%22kw%22%3A%22memcache%E6%80%A7%E8%83%B
+D%22%7D%5D&amp;amp;json=1&amp;amp;p=3&amp;amp;sid=22164_1458_21086_20718&amp;amp;req=2&amp;amp;sc=eb&amp;amp;cso
+r=0&amp;amp;cb=jQuery1102039103513342575114_1491813440556&amp;amp;_=149181344055
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;2-multipart-form-data类型&#34;&gt;2.multipart/form-data类型&lt;/h3&gt;
+
+&lt;p&gt;multipart/form-data用于发送文件数据，同样使用curl发送文件数据到www.baidu.com，命令如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;curl --trace-ascii test.log &#39;http://www.baidu.com/&#39; -F&#39;filename=@***&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;发送数据的完整请求：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;POST / HTTP/1.1
+Host: www.baidu.com
+User-Agent: curl/7.51.0
+Accept: */*
+Content-Length: 215
+Expect: 100-continue
+Content-Type: multipart/form-data; boundary=--------------------
+----99ae40e79f72be6d
+
+--------------------------99ae40e79f72be6d
+Content-Disposition: form-data; name=&amp;quot;filename&amp;quot;; filename=&amp;quot;test.
+log.1&amp;quot;
+Content-Type: application/octet-stream
+
+testdata
+
+--------------------------99ae40e79f72be6d--
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;从以上的请求数据可以看出Content-Type是multipart/form-data，使用boundary定义的分割符分隔(99ae40e79f72be6d)，当文件太长，HTTP无法在一个包之内发送完毕，就需要分割数据，分割成一个一个chunk发送给服务端；&lt;br /&gt;
+其中Content-Disposition描述文件名(回报文也可以标识下载文件名，如需要浏览器保存可以下发header：Content-Disposition:attachment;filename=***.txt)。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-text-xml-application-json和text-plain等其他类型&#34;&gt;3.text/xml，application/json和text/plain等其他类型&lt;/h3&gt;
+
+&lt;p&gt;以text/xml的Content-Type为例，请求的header的数据如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;POST / HTTP/1.1
+Host: www.baidu.com
+User-Agent: curl/7.51.0
+Accept: */*
+Content-Type: text/xml
+Content-Length: 16
+
+&amp;lt;root&amp;gt;111&amp;lt;/root&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;从以上请求的数据可以看出，text/xml，application/json和text/plain等数据都是以raw(未经加工的纯文本)的形式发送，只是对于不同的Content-Type填写相应的发送的数据格式，如果php需要取这类型的数据，可以使用$data = file_get_contents(&amp;lsquo;php://input&amp;rsquo;)。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>读&lt;linux高性能服务器编程&gt;总结(网络基础篇)</title>
       <link>https://linkxzhou.github.io/post/%E8%AF%BB%3Clinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%3E%E6%80%BB%E7%BB%93%28%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%AF%87%29/</link>
       <pubDate>Sat, 01 Apr 2017 20:20:42 +0800</pubDate>
