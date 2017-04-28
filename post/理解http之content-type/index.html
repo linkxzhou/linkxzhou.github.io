@@ -328,7 +328,9 @@ Content-Length: 16
 
 </aside>
 </div>
-
+<div class="article-share" id="share">
+	<div data-url="https://linkxzhou.github.io:443/" data-title="" data-tsina="" class="share clearfix"></div>
+</div>
   </div>
   <footer><div id="footer" >
   
@@ -458,7 +460,8 @@ $(document).ready(function(){
   '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
   '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
   '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
-  '<span title="Share to"></span>'
+  '<span title="Share to"></span>',
+  '<a style="cursor: pointer;border: 0px;bottom: 42px;min-width: 40px;height: 40px;width: 40px;margin: 0px;padding: 0px;position: fixed;right: 30px;border-radius: 25px;line-height: 16px;color: #fff;background: #ea6753;z-index: 9999999;" class="article-share-qrcode-new" title="QRcode"></a>'
   ].join('');
   $this.append(html);
   $('.article-share-qrcode').click(function(){
@@ -467,6 +470,9 @@ $(document).ready(function(){
     $('#qrcode-pic').load(function(){
         $('.qrcode strong').text(' ');
     });
+  });
+  $('.article-share-qrcode-new').click(function(){
+    window.location.href='#qrcode';
   });
 });
 </script>
