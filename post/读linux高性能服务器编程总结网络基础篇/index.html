@@ -375,7 +375,8 @@ tcp服务有重传必然就会导致拥塞，那么接下来介绍网络底层�
 
 <div class="tagcloudlist">
   <p class="asidetitle">标签云</p>
-  <div class="tagcloudlist clearfix">
+  <canvas width="260" height="260" id="tagCloudCanvas"><p>Your browser doesn't support canvas.</p></canvas>
+  <div class="tagcloudlist clearfix" id="tags">
     
     <a href="https://linkxzhou.github.io:443/tags/github" style="font-size: 12px;">github</a>
     
@@ -409,7 +410,6 @@ tcp服务有重传必然就会导致拥塞，那么接下来介绍网络底层�
     
   </div>
 </div>
-
 
 
   
@@ -447,6 +447,7 @@ tcp服务有重传必然就会导致拥塞，那么接下来介绍网络底层�
 </div>
 </footer>
   <script src="https://linkxzhou.github.io:443/js/jquery-2.1.0.min.js"></script>
+<script src="https://linkxzhou.github.io:443/js/jquery.tagcanvas.min.js?ver=4.4.9"></script>
 <script type="text/javascript">
 done = false;
 $(document).ready(function(){
@@ -591,5 +592,18 @@ $(document).ready(function(){
 
 
 
+<script type="text/javascript">
+$(document).ready(function() {
+  if(!jQuery('#tagCloudCanvas').tagcanvas({
+    textColour : '#333333',
+    shape : 'sphere',
+    outlineThickness : 1,
+    maxSpeed : 0.03,
+    depth : 0.75
+  }, 'tags')) {
+    jQuery('#tagCloudCanvas2Container').hide(); 
+  }
+});
+</script> 
 <script data-no-instant>document.write('<script src="/livereload.js?port=443&mindelay=10"></' + 'script>')</script></body>
 </html>
