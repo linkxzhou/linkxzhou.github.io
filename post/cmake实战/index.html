@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>记一次线程之间的数据消费的优化 - linkxzhou的博客</title>
+  <title>cmake实战 - linkxzhou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="背景 最近应客户端的需求，为客户端开发了一套c&#43;&#43;版本的日志系统(后续会专门讲述客户端日志系统的文章)，其中有个功能点是需要每条日志发送到网络">
+  <meta name="description" content="最近在重新编译luvit时，发现luvit的源码文件过于分散，于是准备重写makefile，但是luvit对各个平台都做了兼容，如果直接重写">
   
-  <meta itemprop="name" content="记一次线程之间的数据消费的优化 - linkxzhou的博客">
-  <meta itemprop="description" content="背景 最近应客户端的需求，为客户端开发了一套c&#43;&#43;版本的日志系统(后续会专门讲述客户端日志系统的文章)，其中有个功能点是需要每条日志发送到网络">
+  <meta itemprop="name" content="cmake实战 - linkxzhou的博客">
+  <meta itemprop="description" content="最近在重新编译luvit时，发现luvit的源码文件过于分散，于是准备重写makefile，但是luvit对各个平台都做了兼容，如果直接重写">
   <meta itemprop="image" content="https://linkxzhou.github.io:443/img/author.jpg">
   
   
@@ -57,11 +57,11 @@
 	<article itemprop="articleBody">
     <header class="article-info clearfix">
   <h1 itemprop="name">
-      <a href="https://linkxzhou.github.io:443/post/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BA%BF%E7%A8%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B6%88%E8%B4%B9%E7%9A%84%E4%BC%98%E5%8C%96/" title="记一次线程之间的数据消费的优化" itemprop="url">记一次线程之间的数据消费的优化</a>
+      <a href="https://linkxzhou.github.io:443/post/cmake%E5%AE%9E%E6%88%98/" title="cmake实战" itemprop="url">cmake实战</a>
   </h1>
   
   <p class="article-time">
-    <time datetime="2017-04-10 20:20:42 &#43;0800 CST" itemprop="datePublished">2017年04月10日</time>
+    <time datetime="2017-04-12 20:20:42 &#43;0800 CST" itemprop="datePublished">2017年04月12日</time>
   </p>
 </header>
 
@@ -69,186 +69,222 @@
     
     
 
-<!-- # 记一次线程之间的数据消费的优化 -->
+<!-- cmake实战 -->
 
-<h3 id="背景">背景</h3>
+<p>最近在重新编译luvit时，发现luvit的源码文件过于分散，于是准备重写makefile，但是luvit对各个平台都做了兼容，如果直接重写会遇到很多平台兼容性的if，最后想想还是用cmake，写CMakeLists.txt来简化写makefile的过程，本篇博客主要介绍cmake一些基本语法和libuv重写cmake的过程。</p>
 
-<p>最近应客户端的需求，为客户端开发了一套c++版本的日志系统(后续会专门讲述客户端日志系统的文章)，其中有个功能点是需要每条日志发送到网络，于是按照后台的开发思维方式，我就好不犹豫的设计了一下日志生产和消费者模型，同时也将自己带到了坑中-_-。</p>
+<h3 id="cmake的特点">cmake的特点</h3>
 
-<h3 id="使用队列的消费">使用队列的消费</h3>
+<ul>
+<li>原生支持 C/C++/Fortran/Java 的相依性的自动分析功能，免除了程序员对代码依赖的调整；<br /></li>
+<li>支持跨平台编译；<br /></li>
+<li>CMake需要用户用CMake规范的语法编写CMake脚本，该语法简单易用，入门极其顺手；<br /></li>
+<li>简化构建和编译过程，只需要cmake+make就可以构建编译工程；<br /></li>
+</ul>
 
-<p>按照后台的开发方式，如果要实现一个生产者-消费者模型，设计如下(伪代码)：</p>
+<h3 id="cmake的简单使用">cmake的简单使用</h3>
 
-<pre><code>// 静态队列
-static std::list&lt;Node&gt; queue_;
-// 生产者类
-class Producer {
-public:
-	int PushQueue(Node &amp;node) {
-		// 将数据node写入到queue_中
-	}
-}
-// 消费者
-class Comsumer {
-public:
-	int PopQueue(Node &amp;node) {
-		// 从queue_取出数据写入到node中
-	}
-	void ComsumeThreadFunc() {
-		while (1) {
-			Node tmp_node;
-			PopQueue(tmp_node);
-			// 取完数据做其他的逻辑
-		}
-	}
-	void CreateComsumeThread() {
-		pthread_t thread_id;
-		pthread_create(&amp;thread_id, NULL, ComsumeThreadFunc, (void*)this);
-		// ...
-	}
-}
+<p>demo测试代码，文件有CMakeLists.txt, main.cpp, test.cpp, test.h，其中CMakeList.txt的写法：</p>
+
+<pre><code>project(TestProject) // project(projectname [CXX] [C] [Java]) 指定工程的名称，并且制定工程指定的语言
+cmake_minimum_required(VERSION2.8) // 要求cmake的最少版本为2.8
+
+// 根据参数SHARED还是STATIC来决定生成动态库还是静态库(SHARED动态库)
+add_library(test SHARED test.cpp)
+// target_link_libraries(target library1 &lt;debug | optimized&gt; library2 ...)
+// target 添加需要链接的共享库，其中library1是需要链接的库，其中如下test是目标库，
+// m表示链接库，相当于传给gcc的-lxx(lm表示math库)
+target_link_libraries(test m)
+// STATIC静态库
+add_library(tests STATIC test.cpp)
+// 链接math库
+target_link_libraries(tests m)
+// set_target_properties修改构建目标的一些属性，
+// set_target_properties(target1 target2 ...
+//                      PROPERTIES prop1 value1
+//                      prop2 value2 ...)
+// 这条指令可以用来设置输出的名称，对于动态库，还可以用来指定动态库版本和API版本
+set_target_properties(tests PROPERTIES OUTPUT_NAME test)
+// 产生可执行文件test_main，依赖main.cpp
+add_executable(test_main main.cpp)
+// 添加链接库
+target_link_libraries(test_main test)
+
+set(TEST_HEADER test.h)
+// install(TARGETS targets...
+//            [[ARCHIVE|LIBRARY|RUNTIME]
+//                        [DESTINATION &lt;dir&gt;]
+//                        [PERMISSIONS permissions...]
+//                        [CONFIGURATIONS
+//          [Debug|Release|...]]
+//                        [COMPONENT &lt;component&gt;]
+//                        [OPTIONAL]
+//                       ] [...])
+// TARGETS表示add_executable，add_library的目标文件，
+// ARCHIVE指静态库，LIBRARY指动态库，RUNTIME指可执行目标二进制
+// DESTINATION定义安装的路径
+install(TARGETS test_main test tests
+RUNTIME DESTINATION bin
+LIBRARY DESTINATION lib
+ARCHIVE DESTINATION lib/static)
+// FILES表示普通的文件，${TEST_HEADER}是test.h，表示将test.h移入到include文件夹中
+install(FILES ${TEST_HEADER} DESTINATION include)
+
 </code></pre>
 
-<p>很快形如流水的把第一个版本的这个功能写完了，不知道读者有没有发现了哪些问题？<br />
-首先，队列没有加锁，这样在使用的过程中必然会导致日志错乱；<br />
-其次，while循环处理逻辑PopQueue没有判断，如果队列为空，我们需要等待或者直接退出，这里使用等待40ms；<br />
-最后，设计模型不合理，我们应该将PushQueue和PopQueue封装到一起，这样才能解耦相关逻辑；<br />
-review一遍代码以后发现一些问题，马上修改一个版本：</p>
+<h3 id="cmake的常用变量">cmake的常用变量</h3>
 
-<pre><code>// 静态队列
-static std::list&lt;Node&gt; queue_;
-static Comsumer comsumer_;
-// 生产者类
-class Producer {
-	void Dispose() {
-		// 添加数据
-		comsumer_.PushQueue(node);
-		// ...
-	}
-}
-// 消费者
-class Comsumer {
-	int PopQueue(Node &amp;node) {
-		queue_mutex_.lock();
-		// 从queue_取出数据写入到node中
-		queue_mutex_.unlock();
-	}
-	// 为了逻辑解耦，所以将入队列逻辑直接封装到消费者队列中(其实最好单独提出一个类)
-	int PushQueue(Node &amp;node) {
-		queue_mutex_.lock();
-		// 将数据node写入到queue_中
-		queue_mutex_.unlock();
-	}
-	void ComsumeThreadFunc() {
-		int thread_run_count = 0;
-		while (1) {
-			// 防止线程出问题，当运行一段时间以后直接退出
-			if (thread_run_count &gt; 某个阈值) {
-				thread_run_flag = false;
-				break; // 退出线程
-			}
-			Node tmp_node;
-			int ret = PopQueue(tmp_node);
-			if (ret == 0) {
-				usleep(40000); // 休眠
-				continue; // 退出以后
-			}
-			// 取完数据做其他的逻辑
+<p>1.cmake中存在两个隐式变量 <projectname>_SOURCE_DIR 及<projectname>_BINARY_DIR，前者是工程的根目录，后者是运行cmake命令的目录,通常是${PROJECT_SOURCE_DIR}/build<br />
+2.CMAKE_INCLUDE_PATH 环境变量，非cmake变量<br />
+3.CMAKE_LIBRARY_PATH 环境变量<br />
+4.CMAKE_CURRENT_SOURCE_DIR 当前处理的CMakeLists.txt所在的路径<br />
+5.CMAKE_CURRENT_BINARY_DIR target编译目录，使用ADD_SURDIRECTORY(src bin)可以更改此变量的值，SET(EXECUTABLE_OUTPUT_PATH &lt;新路径&gt;)并不会对此变量有影响,只是改变了最终目标文件的存储路径<br />
+6.CMAKE_CURRENT_LIST_FILE 输出调用这个变量的CMakeLists.txt的完整路径<br />
+7.CMAKE_CURRENT_LIST_LINE 输出这个变量所在的行<br />
+8.EXECUTABLE_OUTPUT_PATH 重新定义目标二进制可执行文件的存放位置<br />
+9.LIBRARY_OUTPUT_PATH 重新定义目标链接库文件的存放位置<br />
+10.PROJECT_NAME 返回通过PROJECT指令定义的项目名称<br />
+11.CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS 用来控制IF ELSE语句的书写方式<br />
+12.CMAKE_MAJOR_VERSION cmake主版本号，如2.8.6中的2<br />
+13.CMAKE_MINOR_VERSION cmake次版本号，如2.8.6中的8<br />
+14.CMAKE_PATCH_VERSION cmake补丁等级，如2.8.6中的6<br />
+15.CMAKE_SYSTEM 系统名称,例如Linux-2.6.22<br />
+16.CAMKE_SYSTEM_NAME 不包含版本的系统名，如Linux<br />
+17.CMAKE_SYSTEM_VERSION 系统版本，如2.6.22<br />
+18.CMAKE_SYSTEM_PROCESSOR 处理器名称，如i686<br />
+19.UNIX 在所有的类UNIX平台为TRUE，包括OS X和cygwin<br />
+20.WIN32 在所有的win32平台为TRUE，包括cygwin<br />
+21.CMAKE_C_FLAGS 设置C编译选项，CMAKE_CXX_FLAGS 设置C++编译选项</p>
 
-			++thread_run_count;
-		}
+<h3 id="cmake的控制语句和api">cmake的控制语句和API</h3>
 
-		pthread_exit(NULL);
-	}
-	void CreateComsumeThread() {
-		pthread_t thread_id;
-		if (！thread_run_flag) {
-			thread_run_flag = true;
-			if (pthread_create(&amp;thread_id, NULL, 
-				ComsumeThreadFunc, (void*)this) != 0) {
-				thread_run_flag = false;
-			}
-		}
-		
-		// ...
-	}
-private:
-	// 线程锁
-	Mutex queue_mutex_;
-	// 线程运行时标志，默认为false
-	int thread_run_flag;
-}
-</code></pre>
+<p><strong>控制语句</strong><br />
+1.if指令</p>
 
-<p>这次似乎比较完美了，于是马上提交给同事review，正在庆幸又完成了一个小功能的时候，发现同事弱弱的说：如果用户没有往队列消费数据或者不使用这个功能，是不是有一个线程一直在跑，我只能：-_-，的确是一个轮询的消费线程一直在执行，与服务端开发不同，在用户的手机上开一个线程是会影响用户耗电，流畅等功能，看来一上午写的功能都白费了，于是重新思考这个消费者模型&hellip;</p>
-
-<h3 id="添加信号量通知消费线程">添加信号量通知消费线程</h3>
-
-<p>线程的信号量是与进程间通讯中使用的信号量的概念是一样的，能被增加和减少，保障被增加和减少对应的变量是原子操作，同时让多个线程访问的同一个信号量的操作是顺序的，线程的semaphore.h中提供四个api：sem_init-初始化；sem_wait-以原子操作的方式将信号量的值减1，当信号的计数为零的时候，将休眠挂起当前调用线程，直到信号量计数不为零；sem_post-以原子操作的方式将信号量的值加1；sem_destroy-对用完的信号量的清理；看一个使用的例子：</p>
-
-<pre><code>// 主线程
-...
-res = sem_init(&amp;sem, 0, 0); 
-res = pthread_create(&amp;thread, NULL, thread_func, msg);  
-if(res != 0)  
-{  
-    perror(&quot;pthread_create failed\n&quot;);  
-    exit(EXIT_FAILURE);  
-}  
-while (true)
-{
+<pre><code>if(expression)
 	...
-	sem_post(&amp;sem); // 数据+1
+else(expression)
 	...
-}
-// 产生的线程执行代码
-void* thread_func(void *msg) 
-{
-	while(true)
-	{
-		...
-		sem_wait(&amp;sem); // 阻塞 
-		...
-	}
-}
+endif()
 </code></pre>
 
-<p>那么用到日志的功能模块中，然后马上进行如下改造：</p>
+<p>如果expression变量不是:空，0，N, NO, OFF, FALSE, NOTFOUND 或 <var>_NOTFOUND 时，表达式为真<br />
+2.while循环</p>
 
-<pre><code>...
-int PushQueue(Node &amp;node) {
-	queue_mutex_.lock();
-	// 将数据node写入到queue_中
-	queue_mutex_.unlock();
-	sem_post(&amp;sem); // +1
-}
-...
-int ret = PopQueue(tmp_node);
-if (ret == 0) {
-	// usleep(40000); // 休眠
-	sem_wait(&amp;sem); // 等待sem&gt;0
-	continue; // 退出以后
-}
-...
+<pre><code>while(expression)
+	COMMAND1(ARGS ...)
+    COMMAND2(ARGS ...)
+endwhile()
 </code></pre>
 
-<h3 id="最终的模型">最终的模型</h3>
+<p>3.foreach<br />
+foreach可以分为几种使用方式：列表，范围，步长</p>
 
-<p>修改完了以后，正准备提交代码，发现一个小的问题，如果sem信号量不成功，那么sem_wait要么一直组塞，要么直接跳过执行，想想这对客户端是巨大隐患，于是又思考如何修改，最终定义如下的解决方案：在sem_init初始化以后，设置一个init_status = true，否则则为false，同时将判断init_status = true则使用sem_wait，否则使用之前的usleep；</p>
-
-<pre><code>int ret = PopQueue(tmp_node);
-if (ret == 0) {
-	if (init_status) {
-		sem_wait(&amp;sem); // 等待sem&gt;0
-	} else {
-		usleep(40000); // 休眠
-	}
-	
-	continue; // 退出以后
-}
+<pre><code>// 列表，参数以空格区分
+foreach(loop_var arg1 arg2 ...)
+	...
+endforeach()
+// 范围，默认步长是1，从0开始一直到total
+foreach(loop_var RANGE total)
+	...
+endforeach()
+// 步长，从start开始到stop结束，步长是step
+foreach(loop_var RANGE start stop [step])
+	...
+endforeach(loop_var)
 </code></pre>
 
-<p>从日志模块中的一个小功能的开发看来，后台开发与客户端开发理念有点不一样，客户端发出去的版本不能实时修复，不能远程直接调试，不能被着用户起很多耗时的操作&hellip;，只能说要写好客户端代码可能比后台要难很多^_^。</p>
+<p><strong>API</strong><br />
+1.cmake_minimum_required(VERSION) 要求cmake的版本；<br />
+2.project(projectname [CXX] [C] [Java]) 指定工程的名称，并且制定工程指定的语言；<br />
+3.set(var value) 设置变量的名称；<br />
+4.message([SEND_ERROR | STATUS | FATAL_ERROR] &ldquo;message to display&rdquo; &hellip;) 打印输出信息；<br />
+5.add_executable(target main.cpp) 产生可执行文件；<br />
+6.cmake最简单的语法规则是:(1)，变量使用${}方式取值，但是在IF控制语句中是直接使用变量名；(2)，指令(参数1 参数2&hellip;)；参数使用括弧括起，参数之间使用空格或分号分开；<br />
+7.add_library(target STATIC|SHARED test.cpp) 生成动态库或静态库；<br />
+8.set_target_properties(tests PROPERTIES OUTPUT_NAME test)；<br />
+9.include_dictory([AFTER|BEFORE] [SYSTEM] dir1 dir2 &hellip;) 头文件搜索，通过AFTER或者BEFORE 参数，也可以控制是追加还是置前；<br />
+10.foreach(loop_var arg1 arg2 &hellip;)<br />
+          command1(ARGS &hellip;)<br />
+          command2(ARGS &hellip;)<br />
+          &hellip;<br />
+endforeach(loop_var)<br />
+可以结合使用aux_source_directory的栗子</p>
+
+<pre><code>aux_source_directory(. SRC_LIST) 
+foreach(F ${SRC_LIST})
+     MESSAGE(${F})
+endforeach(F)
+</code></pre>
+
+<p>11.aux_source_directory(dir VARIABLE) 发现一个目录下所有的源代码文件并将列表存储在一个变量中；<br />
+12.add_definitions 向 C/C++编译器添加-D 定义,比如:add_definitions(-DENABLE_DEBUG -DABC),参数之间用空格分割，如果你的代码中定义了#ifdef ENABLE_DEBUG #endif，这个代码块就会生效；<br />
+13.find_path(<VAR> name1 path1 path2 &hellip;) 用来在指定路径中搜索文件名，其中VAR表示搜索的路径；<br />
+14.find_library(<VAR> name1 path1 path2 &hellip;) 用来在指定路径中搜索库文件，其中VAR表示搜索的路径；<br />
+15.target_link_libraries(test_main test) 为指定的的可执行文件添加链接库，其中test为链接库；<br />
+16.execute_process(COMMAND <cmd1>[args1&hellip;]]) 指定执行多个命令；<br />
+17.function (argument_tester arg)  &hellip; endfunction() argument_tester表示函数名，arg表示参数，其中在函数体内使用${ARGN}获取参数；<br />
+18.get_filename_component(<VAR> FileName PATH|ABSOLUTE|NAME|EXT|NAME_WE|REALPATH [CACHE]) 获取文件名的指定部分；</p>
+
+<h3 id="重写libuv的cmakelists-txt">重写libuv的CMakeLists.txt</h3>
+
+<p>libuv的目录结构：<br />
+include(包含头文件等信息)，<br />
+src(.c的源代码)，<br />
+CMakeLists.txt(cmake的编译文件)，其中CMakeLists.txt的写法如下：</p>
+
+<pre><code>cmake_minimum_required(VERSION 2.8)
+project(LIBUV)
+set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
+
+set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS
+  &quot;${CMAKE_SHARED_MODULE_CREATE_C_FLAGS} -Wno-unused-function&quot;
+)
+set(CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS
+  &quot;${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -Wno-unused-function&quot;
+)
+
+set(LIBUV_COMMON_SRC ${PROJECT_SOURCE_DIR}/fs-poll.c ${PROJECT_SOURCE_DIR}/heap-inl.h ${PROJECT_SOURCE_DIR}/inet.c ${PROJECT_SOURCE_DIR}/queue.h ${PROJECT_SOURCE_DIR}/threadpool.c ${PROJECT_SOURCE_DIR}/uv-common.c ${PROJECT_SOURCE_DIR}/uv-common.h ${PROJECT_SOURCE_DIR}/version.c)
+message(STATUS &quot;PROJECT_BINARY_DIR dir : &quot; ${PROJECT_BINARY_DIR}) 
+message(STATUS &quot;PROJECT_SOURCE_DIR dir : &quot; ${PROJECT_SOURCE_DIR})
+message(STATUS &quot;PROJECT_INCLUDE_DIR dir : &quot; ${PROJECT_INCLUDE_DIR})
+
+include_directories(${PROJECT_INCLUDE_DIR})
+include_directories(${PROJECT_SOURCE_DIR})
+
+if(WIN32)
+  message(STATUS &quot;System name : windows&quot;)
+  set(WIN_DIR &quot;&quot;)
+  foreach(F win/async.c win/atomicops-inl.h win/core.c win/detect-wakeup.c win/dl.c win/error.c win/fs-event.c win/fs.c win/getaddrinfo.c win/getnameinfo.c win/handle.c win/handle-inl.h win/internal.h win/loop-watcher.c win/pipe.c win/poll.c win/process-stdio.c win/process.c win/req.c win/req-inl.h win/signal.c win/stream.c win/stream-inl.h win/tcp.c win/thread.c win/timer.c win/tty.c win/udp.c win/util.c win/winapi.c win/winapi.h win/winsock.c win/winsock.h)
+    list(APPEND WIN_DIR ${PROJECT_SOURCE_DIR}/${F})
+  endforeach()
+  set(LIBUV_SRC ${WIN_DIR})
+  include_directories(${PROJECT_SOURCE_DIR}/win)
+else()
+  message(STATUS &quot;System name : &quot; ${CMAKE_SYSTEM_NAME})
+  set(UNIX_DIR &quot;&quot;)
+  foreach(F unix/async.c unix/atomic-ops.h unix/core.c unix/dl.c unix/fs.c unix/getaddrinfo.c unix/getnameinfo.c unix/internal.h unix/loop-watcher.c unix/loop.c unix/pipe.c unix/poll.c unix/process.c unix/signal.c unix/spinlock.h unix/stream.c unix/tcp.c unix/thread.c unix/timer.c unix/tty.c unix/udp.c)
+    list(APPEND UNIX_DIR ${PROJECT_SOURCE_DIR}/${F})
+  endforeach()
+  set(LIBUV_SRC ${UNIX_DIR})
+endif()
+
+set(UNIX_EXT_NAME ${PROJECT_SOURCE_DIR}/unix)
+if(APPLE)
+    set(CMAKE_C_FLAGS &quot;${CMAKE_C_FLAGS} -D_DARWIN_USE_64_BIT_INODE=1 -D_DARWIN_UNLIMITED_SELECT=1&quot;)
+    set(CMAKE_CXX_FLAGS &quot;${CMAKE_CXX_FLAGS} -D_DARWIN_USE_64_BIT_INODE=1 -D_DARWIN_UNLIMITED_SELECT=1&quot;)
+    set(LIBUV_EXT_SRC ${UNIX_EXT_NAME}/bsd-ifaddrs.c ${UNIX_EXT_NAME}/darwin.c ${UNIX_EXT_NAME}/darwin-proctitle.c ${UNIX_EXT_NAME}/fsevents.c ${UNIX_EXT_NAME}/kqueue.c ${UNIX_EXT_NAME}/proctitle.c ${UNIX_EXT_NAME}/pthread-barrier.c)
+elseif(CMAKE_SYSTEM_NAME MATCHES &quot;Linux&quot;)
+    set(LIBUV_EXT_SRC ${UNIX_EXT_NAME}/linux-core.c ${UNIX_EXT_NAME}/linux-inotify.c ${UNIX_EXT_NAME}/linux-syscalls.c ${UNIX_EXT_NAME}/proctitle.c ${UNIX_EXT_NAME}/linux-syscalls.h)
+elseif(ANDROID)
+    set(LIBUV_EXT_SRC ${UNIX_EXT_NAME}/android-ifaddrs.c ${UNIX_EXT_NAME}/pthread-fixes.c ${UNIX_EXT_NAME}/pthread-barrier.c)
+else(CMAKE_SYSTEM_NAME MATCHES &quot;FreeBSD&quot;)
+    set(LIBUV_EXT_SRC ${UNIX_EXT_NAME}/bsd-ifaddrs.c ${UNIX_EXT_NAME}/freebsd.c ${UNIX_EXT_NAME}/kqueue.c ${UNIX_EXT_NAME}/posix-hrtime.c)
+endif()
+
+add_library(libuv SHARED ${LIBUV_COMMON_SRC} ${LIBUV_SRC} ${LIBUV_EXT_SRC})
+</code></pre>
 
 	</div>
   <footer class="article-footer clearfix">
@@ -257,11 +293,11 @@ if (ret == 0) {
 <div class="article-tags">
   <span></span>
   
-  <a href="https://linkxzhou.github.io:443/tags/%E6%97%A5%E5%BF%97">日志</a>
+  <a href="https://linkxzhou.github.io:443/tags/%E5%B7%A5%E5%85%B7">工具</a>
   
-  <a href="https://linkxzhou.github.io:443/tags/%E7%BA%BF%E7%A8%8B">线程</a>
+  <a href="https://linkxzhou.github.io:443/tags/%E7%BC%96%E8%AF%91">编译</a>
   
-  <a href="https://linkxzhou.github.io:443/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F">信号量</a>
+  <a href="https://linkxzhou.github.io:443/tags/cmake">cmake</a>
   
 </div>
 
@@ -272,14 +308,14 @@ if (ret == 0) {
 <div class="article-categories">
   <span></span>
   
-  <a class="article-category-link" href="https://linkxzhou.github.io:443/categories/%E5%AE%A2%E6%88%B7%E7%AB%AF">客户端</a>
+  <a class="article-category-link" href="https://linkxzhou.github.io:443/categories/%E5%B7%A5%E5%85%B7">工具</a>
   
 </div>
 
 
 
   <div class="article-share" id="share">
-    <div data-url="https://linkxzhou.github.io:443/post/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BA%BF%E7%A8%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B6%88%E8%B4%B9%E7%9A%84%E4%BC%98%E5%8C%96/" data-title="记一次线程之间的数据消费的优化" data-tsina="" class="share clearfix">
+    <div data-url="https://linkxzhou.github.io:443/post/cmake%E5%AE%9E%E6%88%98/" data-title="cmake实战" data-tsina="" class="share clearfix">
     </div>
   </div>
 </footer>
