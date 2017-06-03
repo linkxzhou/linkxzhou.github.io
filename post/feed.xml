@@ -6,10 +6,19 @@
     <description>Recent content in Posts on linkxzhou的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 12 Apr 2017 20:20:42 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 04 Jun 2017 02:20:42 +0800</lastBuildDate>
     
 	<atom:link href="https://linkxzhou.github.io:443/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>关于modified_utf-8的坑与思考</title>
+      <link>https://linkxzhou.github.io:443/post/%E5%85%B3%E4%BA%8Emodified-utf-8%E7%9A%84%E5%9D%91%E4%B8%8E%E6%80%9D%E8%80%83/</link>
+      <pubDate>Sun, 04 Jun 2017 02:20:42 +0800</pubDate>
+      
+      <guid>https://linkxzhou.github.io:443/post/%E5%85%B3%E4%BA%8Emodified-utf-8%E7%9A%84%E5%9D%91%E4%B8%8E%E6%80%9D%E8%80%83/</guid>
+      <description>背景 事情缘于同事调试代码中的一段未知bug，java的jni传输数据到unity层，发现在unity层中的emoji表情不能显示，处于对技术</description>
+    </item>
     
     <item>
       <title>cmake实战</title>

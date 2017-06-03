@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>客户端 on linkxzhou的博客</title>
-    <link>https://linkxzhou.github.io:443/categories/%E5%AE%A2%E6%88%B7%E7%AB%AF/</link>
+    <link>https://linkxzhou.github.io:443/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/</link>
     <description>Recent content in 客户端 on linkxzhou的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Sun, 04 Jun 2017 02:20:42 +0800</lastBuildDate>
     
-	<atom:link href="https://linkxzhou.github.io:443/categories/%E5%AE%A2%E6%88%B7%E7%AB%AF/feed.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://linkxzhou.github.io:443/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/feed.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,15 +18,6 @@
       
       <guid>https://linkxzhou.github.io:443/post/%E5%85%B3%E4%BA%8Emodified-utf-8%E7%9A%84%E5%9D%91%E4%B8%8E%E6%80%9D%E8%80%83/</guid>
       <description>背景 事情缘于同事调试代码中的一段未知bug，java的jni传输数据到unity层，发现在unity层中的emoji表情不能显示，处于对技术</description>
-    </item>
-    
-    <item>
-      <title>记一次线程之间的数据消费的优化</title>
-      <link>https://linkxzhou.github.io:443/post/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BA%BF%E7%A8%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B6%88%E8%B4%B9%E7%9A%84%E4%BC%98%E5%8C%96/</link>
-      <pubDate>Mon, 10 Apr 2017 20:20:42 +0800</pubDate>
-      
-      <guid>https://linkxzhou.github.io:443/post/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BA%BF%E7%A8%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B6%88%E8%B4%B9%E7%9A%84%E4%BC%98%E5%8C%96/</guid>
-      <description>背景 最近应客户端的需求，为客户端开发了一套c++版本的日志系统(后续会专门讲述客户端日志系统的文章)，其中有个功能点是需要每条日志发送到网络</description>
     </item>
     
   </channel>

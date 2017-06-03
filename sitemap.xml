@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://linkxzhou.github.io:443/post/%E5%85%B3%E4%BA%8Emodified-utf-8%E7%9A%84%E5%9D%91%E4%B8%8E%E6%80%9D%E8%80%83/</loc>
+    <lastmod>2017-06-04T02:20:42+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io:443/post/cmake%E5%AE%9E%E6%88%98/</loc>
     <lastmod>2017-04-12T20:20:42+08:00</lastmod>
   </url>
@@ -66,7 +71,7 @@
   
   <url>
     <loc>https://linkxzhou.github.io:443/post/</loc>
-    <lastmod>2017-04-12T20:20:42+08:00</lastmod>
+    <lastmod>2017-06-04T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -89,8 +94,14 @@
   </url>
   
   <url>
+    <loc>https://linkxzhou.github.io:443/tags/utf8/</loc>
+    <lastmod>2017-06-04T02:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io:443/</loc>
-    <lastmod>2017-04-12T20:20:42+08:00</lastmod>
+    <lastmod>2017-06-04T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -101,14 +112,26 @@
   </url>
   
   <url>
+    <loc>https://linkxzhou.github.io:443/tags/%E5%8F%98%E7%A7%8Dutf8/</loc>
+    <lastmod>2017-06-04T02:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io:443/tags/%E5%AD%98%E5%82%A8/</loc>
     <lastmod>2017-03-12T20:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
+    <loc>https://linkxzhou.github.io:443/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/</loc>
+    <lastmod>2017-06-04T02:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io:443/categories/%E5%AE%A2%E6%88%B7%E7%AB%AF/</loc>
-    <lastmod>2017-04-10T20:20:42+08:00</lastmod>
+    <lastmod>2017-06-04T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
