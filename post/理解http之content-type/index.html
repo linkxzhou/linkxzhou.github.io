@@ -150,6 +150,46 @@ Content-Length: 16
 
 <p>从以上请求的数据可以看出，text/xml，application/json和text/plain等数据都是以raw(未经加工的纯文本)的形式发送，只是对于不同的Content-Type填写相应的发送的数据格式，如果php需要取这类型的数据，可以使用$data = file_get_contents(&lsquo;php://input&rsquo;)。</p>
 
+<h3 id="http-1-1-100-continue">HTTP/1.1 100 Continue</h3>
+
+<p>既然说到了文件上传，那么也顺便解释一下：HTTP/1.1 100 Continue，完整的官方解释翻译http的100返回码如下：</p>
+
+<pre><code>使用100(不中断，继续)状态码的目的是为了在客户端发出请求体之前，让服务器根据客户端发出的请求信息(根据请求的头信息)来决定是否愿意接受来自客户端的包含了请求内容的请求；在某些情况下，如果服务器拒绝查看消息主体，这时客户端发送消息主体是不合适的或会降低效率
+</code></pre>
+
+<p>这个是我在写文件上传nginx交互的数据：</p>
+
+<pre><code>&gt; POST /uploadfile HTTP/1.1
+&gt; Host: 139.129.212.166
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 1873
+&gt; Expect: 100-continue
+&gt; Content-Type: multipart/form-data; boundary=------------------------6edc99e25765bfea
+&gt;
+&lt; HTTP/1.1 100 Continue
+HTTP/1.1 100 Continue
+
+&lt; HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+&lt; Server: openresty/1.11.2.3
+Server: openresty/1.11.2.3
+&lt; Date: Sun, 11 Jun 2017 14:04:31 GMT
+Date: Sun, 11 Jun 2017 14:04:31 GMT
+&lt; Content-Type: text/html
+Content-Type: text/html
+&lt; Transfer-Encoding: chunked
+Transfer-Encoding: chunked
+&lt; Connection: keep-alive
+Connection: keep-alive
+
+&lt;
+http://www.zqsiwei.com/static/upload/1497189871/savefile.html
+</code></pre>
+
+<p>那么返回100的具体含义是什么呢？<br />
+答：在使用curl做POST的时候, 当要POST的数据大于1024字节的时候, curl并不会直接就发起POST请求, 而是会分为俩步：1. 发送一个请求, 包含一个Expect:100-continue, 询问Server使用愿意接受数据，2. 接收到Server返回的100-continue应答以后, 才把数据POST给Server；</p>
+
 	</div>
   <footer class="article-footer clearfix">
   
