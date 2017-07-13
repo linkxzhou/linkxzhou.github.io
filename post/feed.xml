@@ -6,10 +6,19 @@
     <description>Recent content in Posts on linkxzhou的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 04 Jun 2017 02:20:42 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 12 Jun 2017 20:20:42 +0800</lastBuildDate>
     
 	<atom:link href="https://linkxzhou.github.io:443/post/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>state - 状态模式</title>
+      <link>https://linkxzhou.github.io:443/post/c&#43;&#43;%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8Bstate/</link>
+      <pubDate>Mon, 12 Jun 2017 20:20:42 +0800</pubDate>
+      
+      <guid>https://linkxzhou.github.io:443/post/c&#43;&#43;%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8Bstate/</guid>
+      <description>原理 在&amp;lt;设计模式：可复用对象软件基础&amp;gt;一书中这样描述TCPConnection的状态变化如何使用状态模式： 1.一个TCPConn</description>
+    </item>
     
     <item>
       <title>关于modified_utf-8的坑与思考</title>
