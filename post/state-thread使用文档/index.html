@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>gstack和gcore的使用 - linkxzhou的博客</title>
+  <title>state-thread使用文档 - linkxzhou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="[导读]如何在不中断现网的情况下，调试现网程序；如何在没有源码的情况下，用一种方式查看该程序的运行栈&hellip;本文主要使用gstack">
+  <meta name="description" content="修改state-thread库 最近在使用协程的开发php扩展，对比了一些协程库，发现state-thread是一个不错的协程开发框架，于是将">
   
-  <meta itemprop="name" content="gstack和gcore的使用 - linkxzhou的博客">
-  <meta itemprop="description" content="[导读]如何在不中断现网的情况下，调试现网程序；如何在没有源码的情况下，用一种方式查看该程序的运行栈&hellip;本文主要使用gstack">
+  <meta itemprop="name" content="state-thread使用文档 - linkxzhou的博客">
+  <meta itemprop="description" content="修改state-thread库 最近在使用协程的开发php扩展，对比了一些协程库，发现state-thread是一个不错的协程开发框架，于是将">
   <meta itemprop="image" content="https://linkxzhou.github.io:443/img/author.jpg">
   
   
@@ -57,136 +57,232 @@
 	<article itemprop="articleBody">
     <header class="article-info clearfix">
   <h1 itemprop="name">
-      <a href="https://linkxzhou.github.io:443/post/gstack%E5%92%8Cgcore%E7%9A%84%E4%BD%BF%E7%94%A8/" title="gstack和gcore的使用" itemprop="url">gstack和gcore的使用</a>
+      <a href="https://linkxzhou.github.io:443/post/state-thread%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/" title="state-thread使用文档" itemprop="url">state-thread使用文档</a>
   </h1>
   
   <p class="article-time">
-    <time datetime="2017-08-01 20:20:42 &#43;0800 CST" itemprop="datePublished">2017年08月01日</time>
+    <time datetime="2017-08-02 18:20:42 &#43;0800 CST" itemprop="datePublished">2017年08月02日</time>
   </p>
 </header>
 
 	<div class="article-content">
     
-    <p>[导读]如何在不中断现网的情况下，调试现网程序；如何在没有源码的情况下，用一种方式查看该程序的运行栈&hellip;本文主要使用gstack和gcore对现网的异常进行分析，并使用gdb调试现网的core文件，当然分析现网进程异常还有其他方法，比如strace，perf等工具，读者可以关注本博客，后续会有相关内容的连载。<br />
-今天在看SPP源码的时候，看到这样一段代码：</p>
+    
 
-<pre><code>	void GstackLog(int pid)
-	{
-		char cmd_buf[128] = {0};
-	
-		snprintf(cmd_buf, sizeof(cmd_buf) - 1, &quot;gstack %d &gt; %s&quot;, pid, spp::exception::GetFileName(1));
-		system(cmd_buf);
-	
-		return;
+<h3 id="修改state-thread库">修改state-thread库</h3>
+
+<p>最近在使用协程的开发php扩展，对比了一些协程库，发现state-thread是一个不错的协程开发框架，于是将其改造为mifast(由于存在编译和性能问题)，同时也整理了相应的api文档。【state-thread背景：其诞生最初是由网景（Netscape）公司的MSPR（Netscape Portable Runtime library）项目中剥离出来，后由SGI（Silicon Graphic Inc）还有Yahoo!公司（前者是主力）开发维护的独立线程库。】</p>
+
+<h3 id="mifast的api-结构体">mifast的api &ndash; 结构体</h3>
+
+<p>(1)st_thread_t<br />
+定义：typedef void * st_thread_t;<br />
+说明：线程类型<br />
+(2)st_cond_t<br />
+定义：typedef void * st_cond_t;<br />
+(3)st_mutex_t<br />
+定义：typedef void * st_mutex_t;<br />
+(4)st_utime_t<br />
+定义：typedef unsigned long long st_utime_t;<br />
+(5)st_netfd_t<br />
+定义：typedef void * st_netfd_t;<br />
+(6)st_switch_cb_t<br />
+定义：typedef void（* st_switch_cb_t）（void）;</p>
+
+<h3 id="mifast的api-初始化函数">mifast的api &ndash; 初始化函数</h3>
+
+<p>(1)st_init（）<br />
+定义：int st_init（void）;<br />
+返回：成功完成后，返回值0。否则，返回值-1，并设置errno来指示错误。<br />
+(2)st_getfdlimit（）<br />
+定义：int st_getfdlimit（void）;<br />
+说明：返回调用进程可以打开的最大文件描述符数。<br />
+(3)st_set_eventsys（）<br />
+定义：int st_set_eventsys（int eventsys）;<br />
+说明：设置事件通知机制。其中eventsys值如下：<br />
+ST_EVENTSYS_DEFAULT 使用默认事件通知机制。通常它是select，但是如果库被编译了定义的USE_POLL宏，则默认是poll。<br />
+ST_EVENTSYS_SELECT  使用select作为事件通知机制。<br />
+ST_EVENTSYS_POLL    使用轮询作为事件通知机制。
+ST_EVENTSYS_ALT 使用替代事件通知机制。所选择的实际机制取决于操作系统支持。例如， 如果支持，则在Linux上使用epoll，并在FreeBSD / OpenBSD上使用kqueue（2）。如果操作系统不支持备用事件通知机制，则设置ST_EVENTSYS_ALT不起作用，并且将使用ST_EVENTSYS_DEFAULT机制。
+(4)st_get_eventsys（）<br />
+定义：int st_get_eventsys（void）;<br />
+说明：返回标识状态线程库使用的事件通知机制的整数值。<br />
+(5)st_get_eventsys_name（）<br />
+定义：const char * st_get_eventsys_name（void）;<br />
+说明：返回状态线程库使用的事件通知机制的名称，可能返回&rdquo;select&rdquo;，&rdquo;poll&rdquo;，&rdquo;kqueue&rdquo;或&rdquo;epoll&rdquo;。<br />
+(6)st_set_switch_in_cb（）, st_set_switch_out_cb（）<br />
+定义：<br />
+st_switch_cb_t st_set_switch_in_cb（st_switch_cb_t cb）;<br />
+st_switch_cb_t st_set_switch_out_cb（st_switch_cb_t cb）;<br />
+说明：这些函数设置回调，当线程分别恢复和停止时，被调用后任何线程切换将调用回调，使用NULL指针来禁用回调（这是默认值）。</p>
+
+<h3 id="mifast的api-线程">mifast的api &ndash; 线程</h3>
+
+<p>(1)st_thread_create ()
+定义：st_thread_t st_thread_create（void <em>（</em> start）（void * arg），void * arg，
+                             int joinable，int stack_size）;<br />
+说明：void <em>（</em> start）（void * arg） 函数指针<br />
+void * arg 函数参数<br />
+joinable 线程是否可以有子线程<br />
+stack_size 堆栈大小（IA-64上的默认堆栈大小为128 KB，所有其他平台的默认堆栈大小为64 KB）<br />
+(2)st_thread_exit（）<br />
+定义：void st_thread_exit（void * retval）;<br />
+说明：终止调用线程 。<br />
+(3)st_thread_join（）<br />
+定义：int st_thread_join（st_thread_t thread，void ** retvalp）;<br />
+说明：等待调用线程，直到指定的线程终止 。
+(4)st_thread_self（）<br />
+定义：st_thread_t st_thread_self（void）;<br />
+(5)st_thread_interrupt（）<br />
+定义：void st_thread_interrupt（st_thread_t thread）;<br />
+说明：中断一个目标线程。<br />
+(6)st_sleep（），st_usleep（）<br />
+定义：int st_sleep（int secs）;<br />
+int st_usleep（st_utime_t usecs）;<br />
+说明：st_sleep 等待秒，st_usleep 等待微秒。<br />
+(7)st_randomize_stacks（）<br />
+定义：int st_randomize_stacks（int on）;<br />
+说明：随机化时，新的堆栈被分配一页为容纳进行随机化。</p>
+
+<h3 id="mifast的api-io功能">mifast的api &ndash; IO功能</h3>
+
+<p>目前大部分大多数状态线程库I/O函数看起来像对应的C库函数，其中两个重点处理：st_netfd_t，st_utime_t，对应C库函数的句柄fd和time_t；
+(1)st_netfd_open（）<br />
+定义：st_netfd_t st_netfd_open（int osfd）;<br />
+说明：打开句柄，任何开放的OS文件描述符; 可以通过调用函数获得，包括但不限于管道，套接字，套接字，fcntl，dup等。
+(2)st_netfd_open_socket（）<br />
+定义：st_netfd_t st_netfd_open_socket（int osfd）;<br />
+说明：此函数创建一个新的文件描述符对象，类型为 st_netfd_t，表示网络通信的开放端点。<br />
+与可能用于任何来源的OS文件描述符的st_netfd_open（）函数不同，st_netfd_open_socket（）只能在套接字上使用。它比st_netfd_open（）更有效。<br />
+(3)st_netfd_free（）<br />
+定义：void st_netfd_free（st_netfd_t fd）;<br />
+说明：释放文件描述符对象，而不关闭底层的操作系统文件描述符。<br />
+(4)st_netfd_close（）<br />
+定义：int st_netfd_close（st_netfd_t fd）;<br />
+说明：关闭文件描述符。<br />
+(5)st_netfd_fileno（）<br />
+定义：int st_netfd_fileno（st_netfd_t fd）;<br />
+说明：返回底层操作系统文件描述符。<br />
+(6)st_netfd_setspecific（）
+定义：void st_netfd_setspecific（st_netfd_t fd，void * value，
+                          void（* destructor）（void *））;<br />
+说明：设置每个描述符的私有数据。<br />
+fd 一个有效的文件描述符对象标识符；<br />
+value 每个描述符的私有数据，或更可能的是指向与指定的文件描述符对象相关联的数据的指针；<br />
+destructor 为与fd关联的专用数据指定可选的析构函数。该函数可以指定为NULL。如果值不为NULL，则在释放文件描述符对象（参见st_netfd_free（）和 st_netfd_close（））时，将使用值作为参数调用此析构函数；<br />
+(7)st_netfd_getspecific（）<br />
+定义：void * st_netfd_getspecific（st_netfd_t fd）;<br />
+说明：获取每个描述符的私有数据。<br />
+(8)st_netfd_serialize_accept（）<br />
+定义：int st_netfd_serialize_accept（st_netfd_t fd）;<br />
+说明：对指定的文件描述符对象的 所有后续accept（3）调用进行序列化；<br />
+注意：在某些平台上（例如，Solaris 2.5和可能的其他SVR4实现） 接受来自同一监听套接字上不同进程的调用（请参阅bind，listen）必须被序列化。此函数将使指定的文件描述符对象上由st_accept（）进行的所有后续accept调用序列化；在通过fork创建多个服务器进程之前，必须调用st_netfd_serialize_accept（）。如果应用程序没有创建多个进程来接受同一侦听套接字上的网络连接，则无需调用此功能；决定是否序列化接受是棘手的。在某些平台上（IRIX，Linux），它根本不需要，而 st_netfd_serialize_accept（）是一个无操作的。在其他平台上，这取决于操作系统的版本（Solaris 2.6不需要，但早期版本）。序列化接受确实会导致轻微的性能损失，因此只有在必要时才启用它。请阅读系统的手册页（accept），然后选择 查看系统是否需要接受序列化。<br />
+(9)st_netfd_poll（）<br />
+定义：int st_netfd_poll（st_netfd_t fd，int how，st_utime_t timeout）;<br />
+说明：POLLIN   fd是可读的；<br />
+POLLOUT fd是可写的；<br />
+POLLPRI fd有异常情况。<br />
+(10)st_accept（）<br />
+定义：st_netfd_t st_accept（st_netfd_t fd，struct sockaddr * addr，int * addrlen，
+                     st_utime_t timeout）;
+说明：对应通用的accept函数。<br />
+fd 接受新连接的会合套接字的文件描述符对象标识符；<br />
+addr struct sockaddr *的结构体；<br />
+addrlen struct sockaddr的长度；<br />
+timeout 类型为st_utime_t的值，指定完成接受操作的时间限制。<br />
+(11)st_connect（）<br />
+定义：int st_connect（st_netfd_t fd，struct sockaddr * addr，int addrlen，
+               st_utime_t timeout）;<br />
+说明：对应通用的connect函数。<br />
+(12)st_read（）<br />
+定义：ssize_t st_read（st_netfd_t fd，void * buf，size_t nbyte，st_utime_t timeout）;<br />
+说明：对应通用的read函数<br />
+(13)其他read函数st_read_fully（），st_read_resid（），st_readv（），st_readv_resid（）<br />
+说明：对应通用的read函数，其中注意st_readv和st_readv_resid的struct iovec参数。<br />
+(14)st_write（）<br />
+定义：ssize_t st_write（st_netfd_t fd，const void * buf，size_t nbyte，
+                 st_utime_t timeout）;<br />
+说明：对应通用的write函数。<br />
+(15)其他write函数st_write_resid（），st_writev（），st_writev_resid（)<br />
+说明：对应通用的write函数，其中注意st_writev和st_writev_resid的struct iovec参数。<br />
+(16)st_recvfrom（）,st_sendto（）<br />
+定义：int st_recvfrom（st_netfd_t fd，void * buf，int len，struct sockaddr * from，
+                int * fromlen，st_utime_t timeout）;<br />
+int st_sendto（st_netfd_t fd，const void * msg，int len，struct sockaddr * to，
+              int tolen，st_utime_t timeout）;<br />
+说明：使用UDP套接字的文件描述符对象接收指定数量的字节
+(17)st_recvmsg（）,st_sendmsg（）<br />
+定义：int st_recvmsg（st_netfd_t fd，struct msghdr * msg，int flags，
+               st_utime_t timeout）;
+int st_sendmsg（st_netfd_t fd，const struct msghdr * msg，int flags，
+               st_utime_t timeout）;
+定义：表示UDP套接字的文件描述符对象，该操作由msg参数控制；如果基础OS套接字上没有缓冲空间可用于保存要发送的消息，则st_sendmsg()将阻塞调用线程，直到空间可用，发生超时或发生错误。<br />
+(18)st_open（）<br />
+定义：st_netfd_t st_open（const char * path，int oflags，mode_t mode）;<br />
+说明：打开一个文件。<br />
+(19)st_poll（）<br />
+定义：int st_poll（struct pollfd * pds，int npds，st_utime_t timeout）;</p>
+
+<h3 id="备注">备注</h3>
+
+<p>(1)st_netfd_t 结构体<br />
+typedef struct _st_netfd
+{
+    int osfd;                   /* Underlying OS file descriptor <em>/
+    int inuse;                  /</em> In-use flag */
+    void <em>private_data;         /</em> Per descriptor private data <em>/
+    _st_destructor_t destructor; /</em> Private data destructor function */
+    void <em>aux_data;             /</em> Auxiliary data for internal use */
+    struct _st_netfd <em>next;     /</em> For putting on the free list */
+} _st_netfd_t;</p>
+
+<p>(2)使用example</p>
+
+<pre><code>void *do_resolve(void *host)  
+{  
+	struct in_addr addr;  
+
+	/* Use dns_getaddr() instead of gethostbyname to get IP address */  
+	if (dns_getaddr(host, &amp;addr, TIMEOUT) &lt; 0) {  
+		fprintf(stderr, &quot;dns_getaddr: can't resolve %s: &quot;, (char *)host);  
+		if (h_errno == NETDB_INTERNAL) {
+			perror(&quot;&quot;);  
+		}
+		else {
+			perror(&quot;&quot;);  
+		}
+	} else {
+		printf(&quot;%-40s %s\n&quot;, (char *)host, inet_ntoa(addr));  
 	}
+
+	return NULL;  
+}
+int main(int argc, char *argv[])  
+{  
+	int i;  
+	if (argc &lt; 2) {  
+		fprintf(stderr, &quot;Usage: %s &lt;hostname1&gt; [&lt;hostname2&gt;] ...\n&quot;, argv[0]);  
+		exit(1);  
+	}  
+
+	if (st_init() &lt; 0) {  
+		perror(&quot;st_init failed&quot;);  
+		exit(1);
+	}
+
+	for (i = 1; i &lt; argc; i++) {  
+		if (st_thread_create(do_resolve, argv[i], 0, 0) == NULL) {  
+			perror(&quot;st_thread_create failed&quot;);  
+			exit(1);  
+		}  
+	}  
+
+	st_thread_exit(NULL);  
+
+	/* NOTREACHED */  
+	return 1;  
+}  
 </code></pre>
-
-<p>发现了gstack命令对于分析现网的cpu过高或者进程异常很有用，于是google一些资料总结用法。<br />
-<strong>1.用top命令查看哪个进程占用CPU高</strong><br />
-先用top找到一个cpu比较的进程进行分析，本文主要是分析spp_conf_worker这个，进程id是28374</p>
-
-<pre><code>	top - 14:57:37 up 438 days,  8:14,  4 users,  load average: 0.37, 0.34, 0.35
-	Tasks: 393 total,   1 running, 392 sleeping,   0 stopped,   0 zombie
-	Cpu(s):  2.4%us,  0.4%sy,  0.0%ni, 96.9%id,  0.2%wa,  0.0%hi,  0.0%si,  0.0%st
-	Mem:  16174040k total, 11568128k used,  4605912k free,   361376k buffers
-	Swap:  2104504k total,   809652k used,  1294852k free,  7227804k cached
-	
-	PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                                                                                   
-	28374 root      20   0  310m 172m 124m S 36.8  1.1   4440:12 spp_conf_worker                                                                                                                                                         
-	3726 root      20   0 98.7m 1552 1476 S  1.0  0.0   5458:35 agent_app                                                                                                                                                               
-	1391 root      20   0 13388 1508  940 R  0.7  0.0   0:00.11 top                                                                                                                                                                     
-	3930 root      20   0 73008 5236 5140 S  0.7  0.0   5768:17 reportexception                                                                                                                                                         
-	14586 root      20   0 1260m 192m 130m S  0.7  1.2 304:49.87 cfs_client_mcd  
-</code></pre>
-
-<p><strong>2.用top -H -p pid命令查看进程内各个线程占用的CPU百分比</strong><br />
-#top -H -p 28374 -d 10(延时10秒)<br />
-top中看到总共两个线程，那要如和分析其high CPU，当然有很多方法分析（比如系统自带的perf工具就很好用），但是本文主要是使用gstack和gcore进入进程中看数据（由于看不到源代码和业务逻辑）</p>
-
-<pre><code>	PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                                                                     
-	28375 root      20   0  310m 144m 124m S 11.7  0.9   4402:33 spp_conf_worker                                                                                                                                                         
-	28374 root      20   0  310m 144m 124m S  0.0  0.9  37:43.73 spp_conf_worker                                        
-</code></pre>
-
-<p><strong>3.使用gstack命令查看进程中各线程的函数调用栈</strong><br />
-#gstack 28374 (gstack 使用是后面带进程号)</p>
-
-<pre><code>	Thread 2 (Thread 0x7f1d1444d700 (LWP 28375)):
-	#0  0x00007f1d20e5115d in nanosleep () from /lib64/libc.so.6
-	#1  0x00007f1d20e51060 in sleep () from /lib64/libc.so.6
-	#2  0x00007f1d1472352c in ?? ()
-	#3  0x0000000000000000 in ?? ()
-	Thread 1 (Thread 0x7f1d21eb9720 (LWP 28374)):
-	#0  0x00007f1d20e8c2c3 in epoll_wait () from /lib64/libc.so.6
-	#1  0x000000000041f364 in CPollerUnit::WaitPollerEvents(int) ()
-	#2  0x00007f1d21912539 in ULS::_LsCheckAppExist(char const*, unsigned int, int*) () from ../bin/lib/libasync_epoll.so
-	#3  0x000000000041e2b8 in spp::worker::CDefaultWorker::realrun(int, char**) ()
-	#4  0x000000000042090c in spp::comm::CServerBase::run(int, char**) ()
-	#5  0x000000000041c06f in main ()
-</code></pre>
-
-<p>发现进程栈的调用是线程1：main &ndash;&gt; spp::comm::CServerBase::run &ndash;&gt; spp::worker::CDefaultWorker::realrun &ndash;&gt; &hellip; 其实这些都是spp的框架里面的函数，那么线程2：sleep &ndash;&gt; nanosleep 说明这个线程里面是会休眠一段时间后，那么有可能是在一个循环里面，一般是循环里面加载配置后，然后休眠几秒继续加载，如果是这样的话，那么cpu应该是过几秒会有升高然后休眠，观察top的数据发现的确是这样，那么进一步分析判断是否有加载配置的动作&hellip;<br />
-<strong>4.使用gcore命令转存进程映像及内存上下文</strong><br />
-#gcore 28374<br />
-使用命令生成core文件core.28374，由于cpu瞬时跳动，所以需要写脚本抓取cpu过高时候的core文件，当然也是随机抓一部分，然后一个一个分析，那么下面就是使用gdb分析core文件&hellip;<br />
-<strong><em>5.用gdb调试core文件</em></strong><br />
-gcore和实际的core dump时产生的core文件几乎一样，只是不能用gdb进行某些动态调试，输入gdb 运行的程序路径(由于业务密码，就不展示具体的路径) core文件名</p>
-
-<pre><code>	(gdb) bt
-	#0  0x00007f7b5c0c22a3 in __epoll_wait_nocancel () from /lib64/libc.so.6
-	#1  0x000000000041f364 in CPollerUnit::WaitPollerEvents (this=0x10bdd70, timeout=10) at ../comm/poller.cpp:246
-	#2  0x00007f7b5cb48539 in ULS::_LsCheckAppExist (szAppName=0x20c49ba5e353f7cf &lt;Address 0x20c49ba5e353f7cf out of bounds&gt;, dwAppId=0, iOldFd=0x41ee0c) at logsys_log_fs.cpp:717
-	#3  0x000000000041e2b8 in spp::worker::CDefaultWorker::realrun (this=0x10b9010, argc=&lt;value optimized out&gt;, argv=&lt;value optimized out&gt;) at defaultworker.cpp:80
-	#4  0x000000000042090c in spp::comm::CServerBase::run (this=0x10b9010, argc=2, argv=0x7fffcdac2288) at ../comm/serverbase.cpp:97
-	#5  0x000000000041c06f in main (argc=2, argv=0x7fffcdac2288) at main.cpp:54
-	(gdb) bt full
-	#0  0x00007f7b5c0c22a3 in __epoll_wait_nocancel () from /lib64/libc.so.6
-	No symbol table info available.
-	#1  0x000000000041f364 in CPollerUnit::WaitPollerEvents (this=0x10bdd70, timeout=10) at ../comm/poller.cpp:246
-	No locals.
-	#2  0x00007f7b5cb48539 in ULS::_LsCheckAppExist (szAppName=0x20c49ba5e353f7cf &lt;Address 0x20c49ba5e353f7cf out of bounds&gt;, dwAppId=0, iOldFd=0x41ee0c) at logsys_log_fs.cpp:717
-	        pstLsLogFs = 0x424fea
-	        pstLsLogFsFile = 0x7f0100000000
-	        iRet = 0
-	        idIter = &lt;error reading variable idIter (Cannot access memory at address 0x1b0)&gt;
-	        nameIter = &lt;error reading variable nameIter (Cannot access memory at address 0x190000001b0)&gt;
-	        __FUNCTION__ = &quot;e-&gt;parent == this&quot;
-	#3  0x000000000041e2b8 in spp::worker::CDefaultWorker::realrun (this=0x10b9010, argc=&lt;value optimized out&gt;, argv=&lt;value optimized out&gt;) at defaultworker.cpp:80
-	        nowtime = &lt;value optimized out&gt;
-	        montime = 1458977637
-	#4  0x000000000042090c in spp::comm::CServerBase::run (this=0x10b9010, argc=2, argv=0x7fffcdac2288) at ../comm/serverbase.cpp:97
-	        p = 0x0
-	        ret = true
-	        i = 2
-	#5  0x000000000041c06f in main (argc=2, argv=0x7fffcdac2288) at main.cpp:54
-	        sa = {__sigaction_handler = {sa_handler = 0x41c0c0 &lt;sigsegv_handler(int)&gt;, sa_sigaction = 0x41c0c0 &lt;sigsegv_handler(int)&gt;}, sa_mask = {__val = {0 &lt;repeats 16 times&gt;}}, sa_flags = 0, sa_restorer = 0}
-	(gdb) 
-</code></pre>
-
-<p>上述是抓到了spp的主线程中的代码，那么再选一个线程分析：</p>
-
-<pre><code>	#0  0x00007fdf7470415d in nanosleep () from /lib64/libc.so.6
-	Missing separate debuginfos, use: debuginfo-install glibc-2.12-1.49.tl1.x86_64 libgcc-4.4.6-3.el6.x86_64 libstdc++-4.4.6-3.el6.x86_64 zlib-1.2.3-27.el6.x86_64
-	(gdb) bt
-	#0  0x00007fdf7470415d in nanosleep () from /lib64/libc.so.6
-	#1  0x00007fdf74704060 in sleep () from /lib64/libc.so.6
-	#2  0x00007fdf67fd652c in ?? ()
-	#3  0x0000000000000000 in ?? ()
-	(gdb) bt full
-	#0  0x00007fdf7470415d in nanosleep () from /lib64/libc.so.6
-	No symbol table info available.
-	#1  0x00007fdf74704060 in sleep () from /lib64/libc.so.6
-	No symbol table info available.
-	#2  0x00007fdf67fd652c in ?? ()
-	No symbol table info available.
-	#3  0x0000000000000000 in ?? ()
-	No symbol table info available.
-	(gdb) 
-</code></pre>
-
-<p>发现这个是处于sleep，最后基本断定是由于加载配置过大导致cpu瞬间飙高的问题，在此就不贴业务的分析结果&hellip;以上可作为分析流程参考。</p>
-
-<p><strong>[总结]</strong>可以根据详细的函数栈进行gdb调试，打印一些变量值，并结合源代码分析为何会poll调用占用很高的CPU，那么总结分析现网进程（在看不到源码的情况），流程为：进程ID-&gt;线程ID-&gt;线程函数调用栈-&gt;函数耗时和调用统计-&gt;源代码分析。</p>
 
 	</div>
   <footer class="article-footer clearfix">
@@ -197,7 +293,9 @@ gcore和实际的core dump时产生的core文件几乎一样，只是不能用gd
   
   <a href="https://linkxzhou.github.io:443/tags/c&#43;&#43;">c&#43;&#43;</a>
   
-  <a href="https://linkxzhou.github.io:443/tags/%E5%B7%A5%E5%85%B7">工具</a>
+  <a href="https://linkxzhou.github.io:443/tags/%E5%8D%8F%E7%A8%8B">协程</a>
+  
+  <a href="https://linkxzhou.github.io:443/tags/%E9%AB%98%E6%80%A7%E8%83%BD">高性能</a>
   
 </div>
 
@@ -215,7 +313,7 @@ gcore和实际的core dump时产生的core文件几乎一样，只是不能用gd
 
 
   <div class="article-share" id="share">
-    <div data-url="https://linkxzhou.github.io:443/post/gstack%E5%92%8Cgcore%E7%9A%84%E4%BD%BF%E7%94%A8/" data-title="gstack和gcore的使用" data-tsina="" class="share clearfix">
+    <div data-url="https://linkxzhou.github.io:443/post/state-thread%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/" data-title="state-thread使用文档" data-tsina="" class="share clearfix">
     </div>
   </div>
 </footer>
