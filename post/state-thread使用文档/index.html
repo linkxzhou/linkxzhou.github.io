@@ -71,7 +71,54 @@
 
 <h3 id="修改state-thread库">修改state-thread库</h3>
 
-<p>最近在使用协程的开发php扩展，对比了一些协程库，发现state-thread是一个不错的协程开发框架，于是将其改造为mifast(由于存在编译和性能问题)，同时也整理了相应的api文档。【state-thread背景：其诞生最初是由网景（Netscape）公司的MSPR（Netscape Portable Runtime library）项目中剥离出来，后由SGI（Silicon Graphic Inc）还有Yahoo!公司（前者是主力）开发维护的独立线程库。】</p>
+<p>最近在使用协程的开发php扩展，对比了一些协程库，发现state-thread是一个不错的协程开发框架，于是将其改造为rapidsvr(由于存在编译和性能问题)，同时也整理了相应的api文档。（state-thread背景：其诞生最初是由网景（Netscape）公司的MSPR（Netscape Portable Runtime library）项目中剥离出来，后由SGI（Silicon Graphic Inc）还有Yahoo!公司（前者是主力）开发维护的独立线程库。）<br />
+废话不多说，先上example（如何用state-thread写server）：</p>
+
+<pre><code>void *do_resolve(void *host)  
+{  
+	struct in_addr addr;  
+
+	/* Use dns_getaddr() instead of gethostbyname to get IP address */  
+	if (dns_getaddr(host, &amp;addr, TIMEOUT) &lt; 0) {  
+		fprintf(stderr, &quot;dns_getaddr: can't resolve %s: &quot;, (char *)host);  
+		if (h_errno == NETDB_INTERNAL) {
+			perror(&quot;&quot;);  
+		}
+		else {
+			perror(&quot;&quot;);  
+		}
+	} else {
+		printf(&quot;%-40s %s\n&quot;, (char *)host, inet_ntoa(addr));  
+	}
+
+	return NULL;  
+}
+int main(int argc, char *argv[])  
+{  
+	int i;  
+	if (argc &lt; 2) {  
+		fprintf(stderr, &quot;Usage: %s &lt;hostname1&gt; [&lt;hostname2&gt;] ...\n&quot;, argv[0]);  
+		exit(1);  
+	}  
+
+	if (st_init() &lt; 0) {  
+		perror(&quot;st_init failed&quot;);  
+		exit(1);
+	}
+
+	for (i = 1; i &lt; argc; i++) {  
+		if (st_thread_create(do_resolve, argv[i], 0, 0) == NULL) {  
+			perror(&quot;st_thread_create failed&quot;);  
+			exit(1);  
+		}  
+	}  
+
+	st_thread_exit(NULL);  
+
+	/* NOTREACHED */  
+	return 1;  
+}  
+</code></pre>
 
 <h3 id="mifast的api-结构体">mifast的api &ndash; 结构体</h3>
 
@@ -103,7 +150,7 @@
 ST_EVENTSYS_DEFAULT 使用默认事件通知机制。通常它是select，但是如果库被编译了定义的USE_POLL宏，则默认是poll。<br />
 ST_EVENTSYS_SELECT  使用select作为事件通知机制。<br />
 ST_EVENTSYS_POLL    使用轮询作为事件通知机制。
-ST_EVENTSYS_ALT 使用替代事件通知机制。所选择的实际机制取决于操作系统支持。例如， 如果支持，则在Linux上使用epoll，并在FreeBSD / OpenBSD上使用kqueue（2）。如果操作系统不支持备用事件通知机制，则设置ST_EVENTSYS_ALT不起作用，并且将使用ST_EVENTSYS_DEFAULT机制。
+ST_EVENTSYS_ALT 使用替代事件通知机制。所选择的实际机制取决于操作系统支持。例如：如果支持，则在Linux上使用epoll，并在FreeBSD / OpenBSD上使用kqueue。如果操作系统不支持备用事件通知机制，则设置ST_EVENTSYS_ALT不起作用，并且将使用ST_EVENTSYS_DEFAULT机制。
 (4)st_get_eventsys（）<br />
 定义：int st_get_eventsys（void）;<br />
 说明：返回标识状态线程库使用的事件通知机制的整数值。<br />
@@ -118,7 +165,7 @@ st_switch_cb_t st_set_switch_out_cb（st_switch_cb_t cb）;<br />
 
 <h3 id="mifast的api-线程">mifast的api &ndash; 线程</h3>
 
-<p>(1)st_thread_create ()
+<p>(1)st_thread_create ()<br />
 定义：st_thread_t st_thread_create（void <em>（</em> start）（void * arg），void * arg，
                              int joinable，int stack_size）;<br />
 说明：void <em>（</em> start）（void * arg） 函数指针<br />
@@ -146,10 +193,10 @@ int st_usleep（st_utime_t usecs）;<br />
 
 <h3 id="mifast的api-io功能">mifast的api &ndash; IO功能</h3>
 
-<p>目前大部分大多数状态线程库I/O函数看起来像对应的C库函数，其中两个重点处理：st_netfd_t，st_utime_t，对应C库函数的句柄fd和time_t；
+<p>目前大部分大多数状态线程库I/O函数看起来像对应的C库函数，其中两个重点处理：st_netfd_t，st_utime_t，对应C库函数的句柄fd和time_t；<br />
 (1)st_netfd_open（）<br />
 定义：st_netfd_t st_netfd_open（int osfd）;<br />
-说明：打开句柄，任何开放的OS文件描述符; 可以通过调用函数获得，包括但不限于管道，套接字，套接字，fcntl，dup等。
+说明：打开句柄，任何开放的OS文件描述符; 可以通过调用函数获得，包括但不限于管道，套接字，套接字，fcntl，dup等。<br />
 (2)st_netfd_open_socket（）<br />
 定义：st_netfd_t st_netfd_open_socket（int osfd）;<br />
 说明：此函数创建一个新的文件描述符对象，类型为 st_netfd_t，表示网络通信的开放端点。<br />
@@ -235,54 +282,6 @@ typedef struct _st_netfd
     void <em>aux_data;             /</em> Auxiliary data for internal use */
     struct _st_netfd <em>next;     /</em> For putting on the free list */
 } _st_netfd_t;</p>
-
-<p>(2)使用example</p>
-
-<pre><code>void *do_resolve(void *host)  
-{  
-	struct in_addr addr;  
-
-	/* Use dns_getaddr() instead of gethostbyname to get IP address */  
-	if (dns_getaddr(host, &amp;addr, TIMEOUT) &lt; 0) {  
-		fprintf(stderr, &quot;dns_getaddr: can't resolve %s: &quot;, (char *)host);  
-		if (h_errno == NETDB_INTERNAL) {
-			perror(&quot;&quot;);  
-		}
-		else {
-			perror(&quot;&quot;);  
-		}
-	} else {
-		printf(&quot;%-40s %s\n&quot;, (char *)host, inet_ntoa(addr));  
-	}
-
-	return NULL;  
-}
-int main(int argc, char *argv[])  
-{  
-	int i;  
-	if (argc &lt; 2) {  
-		fprintf(stderr, &quot;Usage: %s &lt;hostname1&gt; [&lt;hostname2&gt;] ...\n&quot;, argv[0]);  
-		exit(1);  
-	}  
-
-	if (st_init() &lt; 0) {  
-		perror(&quot;st_init failed&quot;);  
-		exit(1);
-	}
-
-	for (i = 1; i &lt; argc; i++) {  
-		if (st_thread_create(do_resolve, argv[i], 0, 0) == NULL) {  
-			perror(&quot;st_thread_create failed&quot;);  
-			exit(1);  
-		}  
-	}  
-
-	st_thread_exit(NULL);  
-
-	/* NOTREACHED */  
-	return 1;  
-}  
-</code></pre>
 
 	</div>
   <footer class="article-footer clearfix">
