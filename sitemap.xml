@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://linkxzhou.github.io:443/post/tailq%E8%AF%A6%E8%A7%A3/</loc>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://linkxzhou.github.io:443/post/state-thread%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/</loc>
     <lastmod>2017-08-02T18:20:42+08:00</lastmod>
   </url>
@@ -68,19 +73,19 @@
   
   <url>
     <loc>https://linkxzhou.github.io:443/tags/c&#43;&#43;/</loc>
-    <lastmod>2017-08-02T18:20:42+08:00</lastmod>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io:443/categories/c&#43;&#43;/</loc>
-    <lastmod>2017-08-02T18:20:42+08:00</lastmod>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io:443/categories/</loc>
-    <lastmod>2017-08-02T18:20:42+08:00</lastmod>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -104,13 +109,19 @@
   
   <url>
     <loc>https://linkxzhou.github.io:443/post/</loc>
-    <lastmod>2017-08-02T18:20:42+08:00</lastmod>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://linkxzhou.github.io:443/tags/</loc>
-    <lastmod>2017-08-02T18:20:42+08:00</lastmod>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://linkxzhou.github.io:443/tags/tailq/</loc>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -134,7 +145,7 @@
   
   <url>
     <loc>https://linkxzhou.github.io:443/</loc>
-    <lastmod>2017-08-02T18:20:42+08:00</lastmod>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -206,7 +217,7 @@
   
   <url>
     <loc>https://linkxzhou.github.io:443/tags/%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2016-12-12T18:20:42+08:00</lastmod>
+    <lastmod>2017-08-10T02:20:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   

@@ -6,10 +6,19 @@
     <description>Recent content in C&#43;&#43; on linkxzhou的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 02 Aug 2017 18:20:42 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 10 Aug 2017 02:20:42 +0800</lastBuildDate>
     
 	<atom:link href="https://linkxzhou.github.io:443/tags/c++/feed.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>tailq详解</title>
+      <link>https://linkxzhou.github.io:443/post/tailq%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Thu, 10 Aug 2017 02:20:42 +0800</pubDate>
+      
+      <guid>https://linkxzhou.github.io:443/post/tailq%E8%AF%A6%E8%A7%A3/</guid>
+      <description>tailq介绍 TAILQ是linux内核对双向队列操作的一种抽象，能实现操作队列需要的各种操作：插入元素，删除元素，遍历队列等，其封装是对应</description>
+    </item>
     
     <item>
       <title>state-thread使用文档</title>
