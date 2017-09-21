@@ -137,7 +137,7 @@ struct head {
 		QMD_TRACE_HEAD(head);                       		\
 		QMD_TRACE_ELEM(&amp;(elm)-&gt;field);                  	\
 	} while (0)
-其中插入方式是通过头插法，QMD_TAILQ_CHECK_TAIL，QMD_TRACE_HEAD，QMD_TRACE_ELEM对应调试信息
+其中插入方式是通过尾插法，QMD_TAILQ_CHECK_TAIL，QMD_TRACE_HEAD，QMD_TRACE_ELEM对应调试信息
 </code></pre>
 
 <p>(5)删除：TAILQ_REMOVE(head, elm, field) head是TAILQ_HEAD的头部，elm是对应需要处理的节点，field就是对应上面的TAILQ_ENTRY</p>
@@ -164,8 +164,8 @@ struct head {
 
 <p>(7)其他</p>
 
-<pre><code>#define TAILQ_FIRST(head)   ((head)-&gt;tqh_first)
-#define TAILQ_NEXT(elm, field) ((elm)-&gt;field.tqe_next)
+<pre><code>#define TAILQ_FIRST(head)   ((head)-&gt;tqh_first) // 队列的第一个节点
+#define TAILQ_NEXT(elm, field) ((elm)-&gt;field.tqe_next) // 当前elm的下一个节点
 </code></pre>
 
 <h3 id="tailq的c-实现">tailq的c++实现</h3>
