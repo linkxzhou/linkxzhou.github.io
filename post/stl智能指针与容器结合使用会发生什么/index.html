@@ -2,18 +2,18 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>开发者 - linkxzhou的博客</title>
+  <title>stl智能指针与容器结合使用会发生什么 - linkxzhou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="开发者">
+  <meta name="description" content="智能指针简介 由于C&#43;&#43;语言没有自动内存回收机制，程序员每次new出来的内存都要手动delete，为了有效缓解忘记内存delete，因此c&#43;&#43;">
   
-  <meta itemprop="name" content="开发者 - linkxzhou的博客">
-  <meta itemprop="description" content="开发者">
+  <meta itemprop="name" content="stl智能指针与容器结合使用会发生什么 - linkxzhou的博客">
+  <meta itemprop="description" content="智能指针简介 由于C&#43;&#43;语言没有自动内存回收机制，程序员每次new出来的内存都要手动delete，为了有效缓解忘记内存delete，因此c&#43;&#43;">
   <meta itemprop="image" content="https://linkxzhou.github.io:443/img/author.jpg">
   
   
   <meta name="twitter:description" content="">
-  <link rel="alternate" href="https://linkxzhou.github.io:443/feed.xml" title="linkxzhou的博客" type="application/rss+xml"/>
+  
   <link rel="shortcut icon" href="https://linkxzhou.github.io:443/img/favicon.ico"/>
   <link rel="apple-touch-icon" href="https://linkxzhou.github.io:443/apple-touch-icon.png" />
   <link rel="apple-touch-icon-precomposed" href="https://linkxzhou.github.io:443/apple-touch-icon.png" />
@@ -53,21 +53,169 @@
 
   </header>
   <div id="container">
-    <div id="main">
-      
-      <h2 id="2016-10">2016-10</h2>
-      
-      <section class="post" itemscope itemprop="blogPost">
-    <a href="https://linkxzhou.github.io:443/post/hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2%E8%BF%87%E7%A8%8B/" title="hugo搭建github博客过程" itemprop="url">
-    <h1 itemprop="name">hugo搭建github博客过程</h1>
-    <p itemprop="description">安装 1.安装hugo hugo是一个快速的静态网站引擎，使用Go语言开发，可以用Markdown格式的文章生成一个完整的静态网站，然后托管到自</p>
-    <time datetime="2016-10-12 18:20:42 &#43;0800 CST" itemprop="datePublished">2016年10月12日</time>
-  </a>
-</section>
+    <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody">
+    <header class="article-info clearfix">
+  <h1 itemprop="name">
+      <a href="https://linkxzhou.github.io:443/post/stl%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E4%B8%8E%E5%AE%B9%E5%99%A8%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88/" title="stl智能指针与容器结合使用会发生什么" itemprop="url">stl智能指针与容器结合使用会发生什么</a>
+  </h1>
+  
+  <p class="article-time">
+    <time datetime="2017-09-10 20:20:42 &#43;0800 CST" itemprop="datePublished">2017年09月10日</time>
+  </p>
+</header>
 
-      
-      
+	<div class="article-content">
+    
+    
+
+<h3 id="智能指针简介">智能指针简介</h3>
+
+<p>由于C++语言没有自动内存回收机制，程序员每次new出来的内存都要手动delete，为了有效缓解忘记内存delete，因此c++中auto_ptr、unique_ptr和shared_ptr这类将类封装成指针的模板对象，并在析构函数里编写delete语句删除指针指向的内存空间；对于编译器来说，智能指针实际上是一个栈对象，并非指针类型，在栈对象生命期即将结束时，智能指针通过析构函数释放有它管理的堆内存，所以智能指针都重载了“operator-&gt;”操作符，直接返回对象的引用，用以操作对象。那么先看几个栗子：</p>
+
+<pre><code>class SimpleTest 
+{
+public:
+    SimpleTest(int test_id) : test_id_(test_id) 
+    {}
+    ~SimpleTest() {}
+    void DoSomething()
+    {
+        std::cout &lt;&lt; &quot;DoSomething ... : &quot; &lt;&lt; test_id_ &lt;&lt; std::endl;
+    }
+private:
+    int test_id_;
+};
+void TestAutoPtr1()
+{
+    std::cout &lt;&lt; &quot;TestAutoPtr1 Test&quot; &lt;&lt; std::endl;
+    std::auto_ptr&lt;SimpleTest&gt; my_ptr(new SimpleTest(1));
+    if (my_ptr.get()) // 判断指针是否为空
+    {
+        my_ptr-&gt;DoSomething();
+    }
+}
+void TestAutoPtr2()
+{
+    std::cout &lt;&lt; &quot;TestAutoPtr2 Test&quot; &lt;&lt; std::endl;
+    std::auto_ptr&lt;SimpleTest&gt; my_ptr(new SimpleTest(2));
+    if (my_ptr.get()) // 判断指针是否为空
+    {
+        std::auto_ptr&lt;SimpleTest&gt; my_ptr0; // 创建一个新的std::auto_ptr&lt;SimpleTest&gt;对象
+        my_ptr0 = my_ptr; // 复制旧的 my_ptr 给 my_ptr0
+        my_ptr0-&gt;DoSomething();
+        my_ptr-&gt;DoSomething();
+    }
+}
+void TestAutoPtr3()
+{
+    std::cout &lt;&lt; &quot;TestAutoPtr3 Test&quot; &lt;&lt; std::endl;
+    std::shared_ptr&lt;SimpleTest&gt; my_ptr(new SimpleTest(3));
+    if (my_ptr.get()) // 判断指针是否为空
+    {
+        std::shared_ptr&lt;SimpleTest&gt; my_ptr0; // 创建一个新的std::auto_ptr&lt;SimpleTest&gt;对象
+        std::cout &lt;&lt; &quot;[1]UseCount: &quot; &lt;&lt; my_ptr.use_count() &lt;&lt; std::endl;
+        my_ptr0 = my_ptr; // 复制旧的 my_ptr 给 my_ptr0
+        my_ptr0-&gt;DoSomething();
+        my_ptr-&gt;DoSomething();
+        std::cout &lt;&lt; &quot;[2]UseCount: &quot; &lt;&lt; my_ptr.use_count() &lt;&lt; std::endl;
+    }
+}
+void TestAutoPtr4()
+{
+    std::cout &lt;&lt; &quot;TestAutoPtr4 Test&quot; &lt;&lt; std::endl;
+    std::unique_ptr&lt;SimpleTest&gt; my_ptr(new SimpleTest(4));
+    if (my_ptr.get()) // 判断指针是否为空
+    {
+        std::unique_ptr&lt;SimpleTest&gt; my_ptr0; // 创建一个新的std::auto_ptr&lt;SimpleTest&gt;对象
+        my_ptr0 = std::move(my_ptr); // 复制旧的 my_ptr 给 my_ptr0
+        my_ptr0-&gt;DoSomething();
+        my_ptr-&gt;DoSomething();
+    }
+}
+</code></pre>
+
+<p>那么问题来了：TestAutoPtr1、TestAutoPtr2、TestAutoPtr3、TestAutoPtr4这几个函数，那几个会出现crash呢？现在这里卖个关子，如果想了解智能指针童鞋在文章最后会给出相应的答案，下面先进入文章的问题：“stl智能指针与容器结合使用会发生什么”。</p>
+
+<h3 id="stl智能指针与容器结合使用会发生什么">stl智能指针与容器结合使用会发生什么</h3>
+
+<p>先上一段代码：</p>
+
+<pre><code>void TestAutoPtr5()
+{
+    std::cout &lt;&lt; &quot;TestAutoPtr5 Test&quot; &lt;&lt; std::endl;
+    std::vector&lt; std::unique_ptr&lt;SimpleTest&gt; &gt; vc;
+    vc.push_back(std::unique_ptr&lt;SimpleTest&gt;(new SimpleTest(5)));
+    vc.push_back(std::unique_ptr&lt;SimpleTest&gt;(new SimpleTest(6)));
+    vc.push_back(std::unique_ptr&lt;SimpleTest&gt;(new SimpleTest(7)));
+
+    // 1-----
+    for (std::vector&lt; std::unique_ptr&lt;SimpleTest&gt; &gt;::iterator iter = vc.begin();
+        iter != vc.end(); iter++)
+    {
+        (*iter)-&gt;DoSomething();
+    }
+
+    // 2-----
+    vc.resize(5);
+    for (std::vector&lt; std::unique_ptr&lt;SimpleTest&gt; &gt;::iterator iter = vc.begin();
+    iter != vc.end(); iter++)
+    {
+        (*iter)-&gt;DoSomething();
+    }
+}
+</code></pre>
+
+<p>那么这段代码会发生什么？这段代码会发生crash，但是如果注释掉2下面那段代码，就没有问题。其实这段是由于resize引起的，vector对于空间不够的情况下，resize会扩展空间，那么同时会将对应的容器元素默认构造，那么std::unique_ptr<T>默认构造会产生一个为NULL的指针，如果直接使用没有用get()判断那么就会core，但是如果vector的空间是够了（比如vc.resize(3)），resize不会产生新的元素，那么使用迭代器就不会有问题。<br />
+以上只是举了std::unique_ptr智能指针，使用其他的转移值也是一样，所以在使用容器的时候一定要注意容器是不是将元素里面的指针值转移或者智能指针有默认构造函数，将指针赋值为空（对于没有默认构造函数的智能指针不会有问题，因为一般在编译的时候就报错了，如：scoped_ptr）。<br />
+<strong><em>=========================以上是我踩得坑，记录一下，方便大家翻阅=========================</em></strong></p>
+
+<p>回答第一节的问题：TestAutoPtr1不会core、TestAutoPtr2会core、TestAutoPtr3不会core、TestAutoPtr4会core，具体可以了解一下智能指针的指针转移过程。</p>
+
+<h3 id="引用">引用</h3>
+
+<p>[1]<a href="http://blog.csdn.net/xt_xiaotian/article/details/5714477">http://blog.csdn.net/xt_xiaotian/article/details/5714477</a><br />
+[2]effective c++</p>
+
+	</div>
+  <footer class="article-footer clearfix">
+  
+
+<div class="article-tags">
+  <span></span>
+  
+  <a href="https://linkxzhou.github.io:443/tags/c&#43;&#43;">c&#43;&#43;</a>
+  
+  <a href="https://linkxzhou.github.io:443/tags/stl">stl</a>
+  
+</div>
+
+
+
+
+
+<div class="article-categories">
+  <span></span>
+  
+  <a class="article-category-link" href="https://linkxzhou.github.io:443/categories/c&#43;&#43;">c&#43;&#43;</a>
+  
+</div>
+
+
+
+  <div class="article-share" id="share">
+    <div data-url="https://linkxzhou.github.io:443/post/stl%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E4%B8%8E%E5%AE%B9%E5%99%A8%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88/" data-title="stl智能指针与容器结合使用会发生什么" data-tsina="" class="share clearfix">
     </div>
+  </div>
+</footer>
+
+	</article>
+  
+
+
+
+</div>
+
     <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -266,10 +414,6 @@
 
 
   
-<div class="rsspart">
-  <a rel="nofollow" href="https://linkxzhou.github.io:443/feed.xml" type="application/rss+xml" target="_blank">RSS 订阅</a>
-</div>
-
 
 </aside>
 </div>
@@ -371,6 +515,38 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 $(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
   var $this = $('.share'),
       url = $this.attr('data-url'),
       encodedUrl = encodeURIComponent(url),
@@ -402,6 +578,27 @@ $(document).ready(function(){
 });
 </script>
 
+
+<link rel="stylesheet" href="https://linkxzhou.github.io:443/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="https://linkxzhou.github.io:443/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
 
 
 
