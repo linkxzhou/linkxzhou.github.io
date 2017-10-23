@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>state - 状态模式 - linkxzhou的博客</title>
+  <title>appium自动化测试环境搭建 - linkxzhou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="原理 在&lt;设计模式：可复用对象软件基础&gt;一书中这样描述TCPConnection的状态变化如何使用状态模式： 1.一个TCPConn">
+  <meta name="description" content="appium介绍 Appium是一个开源的、跨平台的测试框架，可以用来测试Native App、混合应用、移动Web应用（H5应用）。 Appiu">
   
-  <meta itemprop="name" content="state - 状态模式 - linkxzhou的博客">
-  <meta itemprop="description" content="原理 在&lt;设计模式：可复用对象软件基础&gt;一书中这样描述TCPConnection的状态变化如何使用状态模式： 1.一个TCPConn">
+  <meta itemprop="name" content="appium自动化测试环境搭建 - linkxzhou的博客">
+  <meta itemprop="description" content="appium介绍 Appium是一个开源的、跨平台的测试框架，可以用来测试Native App、混合应用、移动Web应用（H5应用）。 Appiu">
   <meta itemprop="image" content="https://linkxzhou.github.io:443/img/author.jpg">
   
   
@@ -57,11 +57,11 @@
 	<article itemprop="articleBody">
     <header class="article-info clearfix">
   <h1 itemprop="name">
-      <a href="https://linkxzhou.github.io:443/post/c&#43;&#43;%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8Bstate/" title="state - 状态模式" itemprop="url">state - 状态模式</a>
+      <a href="https://linkxzhou.github.io:443/post/appium%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="appium自动化测试环境搭建" itemprop="url">appium自动化测试环境搭建</a>
   </h1>
   
   <p class="article-time">
-    <time datetime="2017-06-12 20:20:42 &#43;0800 CST" itemprop="datePublished">2017年06月12日</time>
+    <time datetime="2017-09-15 20:20:42 &#43;0800 CST" itemprop="datePublished">2017年09月15日</time>
   </p>
 </header>
 
@@ -69,127 +69,245 @@
     
     
 
-<!-- ## state - 状态模式 -->
+<h3 id="appium介绍">appium介绍</h3>
 
-<h3 id="原理">原理</h3>
+<p>Appium是一个开源的、跨平台的测试框架，可以用来测试Native App、混合应用、移动Web应用（H5应用）。</p>
 
-<p>在&lt;设计模式：可复用对象软件基础&gt;一书中这样描述TCPConnection的状态变化如何使用状态模式：<br />
-1.一个TCPConnection会有连接已建立(Established)，正在监听(Listening)，连接已关闭这几个状态，那么在其他对象使用TCPConnection使用它时，它要根据自身的状态作出不同的反应；<br />
-2.为了不将各个状态的实际操作暴露，引入TCPState的抽象类，TCPState为个表示不同的操作状态的子类声明公共接口，其中子类的实现与特定的状态相关的行为；<br />
-3.TCPState抽象网络连接状态接口，在c++中可以使用虚函数的方式，为了TCPState完全抽象，建议设置为纯虚类(不能实例化)；<br />
-4.TCPConnection类维护一个TCPState(例如：TCPEstablished)子类的实例，TCPConnection所有的操作都委托给TCPState(例如：TCPEstablished)子类的实例，其中内部的状态转移和实例替换全部都被TCPEstablished封装，那么说了这么多，其实看代码最透彻；</p>
-
-<h3 id="实例代码">实例代码</h3>
-
-<pre><code>// 精简&lt;设计模式：可复用对象软件基础&gt;代码，没有重写一个栗子的原因是TCP状态转移是state设计模式最好的表现
-
-// 需要操作的类
-class TCPConnection
-{
-public:
-	TCPConnection()
-	{
-		state_ = TCPClosed::Instance();
-	}
-
-	void Connect() // 连接
-	{
-		state_-&gt;ActiveOpen(this);
-	}
-	void Send() // 发送数据
-	{
-		state_-&gt;Send(this);
-	}
-	void Close() // 关闭连接
-	{
-		state_-&gt;Close(this);
-	}
-	void Process(void* data); // 处理实际数据
-
-private:
-	friend class TCPState;
-	void ChangeState(TCPState* s)
-	{
-		state_ = s;
-	}
-
-private:
-	TCPState* state_;
-};
-class TCPState
-{
-public:
-	virtual void Transmit(TCPConnection* ,void* );
-	virtual void Send(TCPConnection*);
-	virtual void Close(TCPConnection*);
-	virtual void ActiveOpen(TCPConnection*);
-	virtual void PassiveOpen(TCPConnection*);
-
-protected:
-	void ChangeState(TCPConnection* t, TCPState* s)
-	{
-		t-&gt;ChangeState(s); // 改变TCPState
-	}
-};
-class TCPEstablished : public TCPState
-{
-public:
-	static TCPState* Instance();
-
-	virtual void Transmit(TCPConnection* t, void* data)
-	{
-		// ... 实际处理逻辑
-		t-&gt;Process(data); // 处理完数据
-	}
-	virtual void Close(TCPConnection* t)
-	{
-		// ... 实际处理逻辑
-		ChangeState(t, TCPListened::Instance());
-	}
-
-private:
-	static TCPEstablished* instance_;
-};
-class TCPListened : public TCPState
-{
-public:
-	static TCPState* Instance();
-
-	virtual void Send(TCPConnection* t)
-	{
-		// ... 实际处理逻辑
-		ChangeState(t, TCPEstablished::Instance());		
-	}
-
-private:
-	static TCPListened* instance_;
-};
-class TCPClosed : public TCPState
-{
-public:
-	static TCPState* Instance();
-
-	virtual void ActiveOpen(TCPConnection* t)
-	{
-		// ... 实际处理逻辑
-		ChangeState(t, TCPEstablished::Instance());	
-	}
-	virtual void PassiveOpen(TCPConnection* t)
-	{
-		// ... 实际处理逻辑
-		ChangeState(t, TCPListened::Instance());	
-	}
-
-private:
-	static TCPClosed* instance_;
-};
+<pre><code>Appium坚持的测试理念：
+无需用户对APP进行任何修改或者重新编译，App应该Born to be automated；  
+不应该限制用户只能使用特定的语言或者框架来编写和执行测试；  
+移动测试框架的API应该是稳定的，合理的，不应对自动化API反复的造轮子；  
+移动测试框架应该是开源的，包括“精神和肉体”；  
 </code></pre>
 
-<h3 id="state模式使用场景">state模式使用场景</h3>
+<p>目前，Appium支持Python、JavaScript、Objective C、Java、Ruby、php、c#。WeTest目前首先选择支持Python语言和Java语言。其他语言将会陆续在WeTest上得到支持。您也可以告诉我们您希望下一个被支持的语言，Appium的架构是如何设计的？事实上，Appium 真正的工作引擎全部是第三方自动化框架。这样，就不需在你的应用里植入其他任何代码，也就是说你测试使用的应用和最终发布的应用完全一致。使用以下的第三方框架如下：<br />
+IOS: 苹果的 UIAutomation<br />
+Android 4.2+: Google’s UiAutomator<br />
+Android 2.3+: Google’s Instrumentation<br />
+Appium把这些第三方框架封装成一套 WebDriver API，(协议格式参见 JSON Wire Protocol)，使用这种CS架构，Appium就可以通过任何语言来封装API调用，从而提供不同语言的客户端给不同的人员，Appium 的核心是一个web服务器，它提供了一套REST的接口。它收到客户端的连接，监听到命令，接着在移动设备上执行这些命令，然后将执行结果放在HTTP响应中返还给客户端，事实上，这种客户端/服务端的架构给予了许多的可能性：比如我们可以使用任何实现了该客户端的语言来写我们的测试代码。</p>
 
-<p>state模式适用以下场景：<br />
-1.一个对象的行为取决于他的状态，并且它必须在运行时根据状态改变它的行为；<br />
-2.一个操作中包含多个分支，分支又依赖对象的状态，这个对象通常用一个或者多个枚举常量表示，通常多个操作包含这一相同的条件结构，State模式将每一个条件分支放入一个独立的类中，这个使得你可以根据对象自身的情况将对象的状态作为一个对象，这一对象可以不依赖于其他对象而独立变化；</p>
+<h3 id="appium安装步骤">appium安装步骤</h3>
+
+<h5 id="1-安装npm-如果是国内建议使用alibaba的cnpm">(1)安装npm(如果是国内建议使用Alibaba的cnpm)</h5>
+
+<p>mac: brew install npm<br />
+windows: 直接去官网下载安装文件 (<a href="https://nodejs.org/en/">https://nodejs.org/en/</a>) ,下载nodejs安装包安装后就可以运行npm<br />
+安装完成后建议切换到cnpm，命令：npm install -g cnpm &ndash;registry=<a href="https://registry.npm.taobao.org">https://registry.npm.taobao.org</a><br />
+运行命令查看版本：cnpm -v</p>
+
+<h5 id="2-安装appium-doctor检测安装环境">(2)安装appium-doctor检测安装环境</h5>
+
+<p>执行：cnpm install appium-doctor -g<br />
+运行：appium-doctor<br />
+获得输出如下：</p>
+
+<pre><code>info AppiumDoctor Appium Doctor v.1.4.3
+info AppiumDoctor ### Diagnostic starting ###
+info AppiumDoctor  ✔ The Node.js binary was found at: /usr/local/bin/node
+info AppiumDoctor  ✔ Node version is 7.10.0
+info AppiumDoctor  ✔ Xcode is installed at: /Applications/Xcode.app/Contents/Developer
+info AppiumDoctor  ✔ Xcode Command Line Tools are installed.
+info AppiumDoctor  ✔ DevToolsSecurity is enabled.
+info AppiumDoctor  ✔ The Authorization DB is set up properly.
+info AppiumDoctor  ✔ Carthage was found at: /usr/local/bin/carthage
+info AppiumDoctor  ✔ HOME is set to: /Users/linkxzhou
+WARN AppiumDoctor  ✖ ANDROID_HOME is NOT set!
+WARN AppiumDoctor  ✖ JAVA_HOME is NOT set!
+WARN AppiumDoctor  ✖ adb could not be found because ANDROID_HOME is NOT set!
+WARN AppiumDoctor  ✖ android could not be found because ANDROID_HOME is NOT set!
+WARN AppiumDoctor  ✖ emulator could not be found because ANDROID_HOME is NOT set!
+WARN AppiumDoctor  ✖ Bin directory for $JAVA_HOME is not set
+info AppiumDoctor ### Diagnostic completed, 6 fixes needed. ###
+info AppiumDoctor
+info AppiumDoctor ### Manual Fixes Needed ###
+info AppiumDoctor The configuration cannot be automatically fixed, please do the following first:
+WARN AppiumDoctor - Manually configure ANDROID_HOME.
+WARN AppiumDoctor - Manually configure JAVA_HOME.
+WARN AppiumDoctor - Manually configure ANDROID_HOME and run appium-doctor again.
+WARN AppiumDoctor - Add '$JAVA_HOME/bin' to your PATH environment
+info AppiumDoctor ###
+info AppiumDoctor
+info AppiumDoctor Bye! Run appium-doctor again when all manual fixes have been applied!
+info AppiumDoctor
+</code></pre>
+
+<p>红色的叉表示对应的环境有问题，需要自己配置，比如ANDROID_HOME和JAVA_HOME异常，在系统目录中配置ANDROID_HOME和JAVA_HOME，其中本人的配置如下(mac中的配置，写到~/.profile中，然后执行source ~/.profile)：</p>
+
+<pre><code>export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home/
+export ANDROID_HOME=/Users/xxxx/Library/Android/sdk/
+export PATH=${PATH}:${JAVA_HOME}bin
+</code></pre>
+
+<p>以上配置在windows需要修改，将在环境变量中增加或者修改JAVA_HOME，ANDROID_HOME，PATH这几个值。<br />
+<strong><em>注意：</em></strong><br />
+a.在ios上如果Carthage上有红色的叉，那么就需要安装carthage，运行：brew install carthage<br />
+b.如果只是测试单个平台可以通过appium-doctor &ndash;ios或者appium-doctor &ndash;android判断环境是否正常</p>
+
+<p>配置完成再次执行：</p>
+
+<pre><code>info AppiumDoctor Appium Doctor v.1.4.3
+info AppiumDoctor ### Diagnostic starting ###
+info AppiumDoctor  ✔ The Node.js binary was found at: /usr/local/bin/node
+info AppiumDoctor  ✔ Node version is 7.10.0
+info AppiumDoctor  ✔ Xcode is installed at: /Applications/Xcode.app/Contents/Developer
+info AppiumDoctor  ✔ Xcode Command Line Tools are installed.
+info AppiumDoctor  ✔ DevToolsSecurity is enabled.
+info AppiumDoctor  ✔ The Authorization DB is set up properly.
+info AppiumDoctor  ✔ Carthage was found at: /usr/local/bin/carthage
+info AppiumDoctor  ✔ HOME is set to: /Users/linkxzhou
+info AppiumDoctor  ✔ ANDROID_HOME is set to: /Users/linkxzhou/Library/Android/sdk/
+info AppiumDoctor  ✔ JAVA_HOME is set to: /Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home/
+info AppiumDoctor  ✔ adb exists at: /Users/linkxzhou/Library/Android/sdk/platform-tools/adb
+info AppiumDoctor  ✔ android exists at: /Users/linkxzhou/Library/Android/sdk/tools/android
+info AppiumDoctor  ✔ emulator exists at: /Users/linkxzhou/Library/Android/sdk/tools/emulator
+info AppiumDoctor  ✔ Bin directory of $JAVA_HOME is set
+info AppiumDoctor ### Diagnostic completed, no fix needed. ###
+info AppiumDoctor
+info AppiumDoctor Everything looks good, bye!
+info AppiumDoctor
+</code></pre>
+
+<h5 id="3-安装appium和python环境">(3)安装Appium和python环境</h5>
+
+<p>a.安装Appium<br />
+运行：cnpm install –g appium<br />
+执行完成以后就可以执行appium命令，appium -v（当然也可以去 <a href="https://github.com/appium/appium-desktop/releases/tag/v1.2.4">https://github.com/appium/appium-desktop/releases/tag/v1.2.4</a> 下载界面版本的appium安装，但是本文选择命令行版本）</p>
+
+<p>b.安装python+webdriver环境（python的开发环境这里暂无）<br />
+由于本人的用例是用python写的，所以选择python环境，如果您对其他的比较熟悉，可以选择java或者ruby等语言；<br />
+运行：pip install selenium # 安装selenium<br />
+运行：pip install appium-Python-Client # 安装appium-Python-Client</p>
+
+<p>c.执行appium<br />
+选择连接手机，先执行adb devices，记录对应的设备id，如下：</p>
+
+<pre><code>List of devices attached
+A6KBYHMB99999999	device
+</code></pre>
+
+<p>运行:appium -a 127.0.0.1 -p 4723 -U A6KBYHMB99999999 &ndash;no-reset #表示启动4723端口，设备id是A6KBYHMB99999999<br />
+输入数据：</p>
+
+<pre><code>[Appium] Welcome to Appium v1.7.1
+[Appium] Non-default server args:
+[Appium]   address: 127.0.0.1
+[Appium]   udid: A6KBYHMB99999999
+[Appium]   noReset: true
+[Appium] Deprecated server args:
+[Appium]   -U,--udid =&gt; --default-capabilities '{&quot;udid&quot;:&quot;A6KBYHMB99999999&quot;}'
+[Appium]   --no-reset =&gt; --default-capabilities '{&quot;noReset&quot;:true}'
+[Appium] Default capabilities, which will be added to each request unless overridden by desired capabilities:
+[Appium]   udid: 'A6KBYHMB99999999'
+[Appium]   noReset: true
+[Appium] Appium REST http interface listener started on 127.0.0.1:4723
+</code></pre>
+
+<p>查看是否执行成功可以通过本地浏览器输入： <a href="http://127.0.0.1:4723/aaa">http://127.0.0.1:4723/aaa</a> ，获得输出： The URL &lsquo;/aaa&rsquo; did not map to a valid resource</p>
+
+<p><strong><em>如果以上执行正常表示执行成功，那么下面我们就可以编辑测试用例开始自动化测试！</em></strong></p>
+
+<h3 id="编辑测试用例-这里以android自动化作为样栗-其中appium本身是支持ios-android和web端">编辑测试用例(这里以android自动化作为样栗，其中appium本身是支持ios，android和web端)</h3>
+
+<p>以手头的demo为栗子，代码如下：</p>
+
+<pre><code>import os
+import time
+import unittest
+from selenium import webdriver
+from lib2to3.pgen2.driver import Driver
+from lib2to3.tests.support import driver
+ 
+PATH=lambda p:os.path.abspath(
+    os.path.join(os.path.dirname(__file__),p)                            
+)
+
+# 定义的测试驱动
+global driver
+ 
+class DownloadSDKAndroidTests(unittest.TestCase):
+    def setUp(self):
+        desired_caps={}
+        desired_caps['device'] = 'android'
+        desired_caps['platformName']='Android'
+        desired_caps['browserName']=''
+        desired_caps['version']='4.4.2'
+        #这是测试机的型号，可以查看手机的关于本机选项获得
+        desired_caps['deviceName']='MIUI-KXCCNBF22.0'
+        #被测试的App在电脑上的位置
+        desired_caps['app'] = PATH('/Volumes/CommonUser/mgtv/app-debug.apk')
+ 
+        #如果知道被测试对象的apppage，appActivity可以加上下面这两个参数，如果不知道，可以注释掉，不影响用例执行
+        #desired_caps['appPackage']='com.mgtv.downloader'
+        #desired_caps['appActivity']='.MainActivity'
+        self.driver=webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
+       
+    def tearDown(self):
+        self.driver.quit()
+   
+    #点击“开始下载”按钮
+    def test_startdownload(self):
+        print &quot;test_startdownload ...&quot;
+        time.sleep(2)        
+        #button=self.driver.find_element_by_id(&quot;com.mgtv.downloader:id/button&quot;)
+        button=self.driver.find_element_by_name(u&quot;开始下载&quot;)
+        button.click()
+        time.sleep(10)
+
+    #点击“暂停下载”按钮 
+    def test_stopdownload(self):
+        print &quot;test_stopdownload ...&quot;
+        time.sleep(2)   
+        button=self.driver.find_element_by_id(&quot;com.mgtv.downloader:id/button3&quot;)
+        button.click()
+        time.sleep(10)
+
+    #点击“恢复下载”按钮 
+    def test_resumedownload(self):
+        print &quot;test_resumedownload ...&quot;
+        time.sleep(2)   
+        button=self.driver.find_element_by_id(&quot;com.mgtv.downloader:id/button5&quot;)
+        button.click()
+        time.sleep(10)
+
+    #点击“删除下载”按钮 
+    def test_deletedownload(self):
+        print &quot;test_deletedownload ...&quot;
+        time.sleep(2)   
+        button=self.driver.find_element_by_id(&quot;com.mgtv.downloader:id/button2&quot;)
+        button.click()
+        time.sleep(10)
+
+    #点击“播放”按钮 
+    def test_play(self):
+        print &quot;test_play ...&quot;
+        time.sleep(2)   
+        button=self.driver.find_element_by_id(&quot;com.mgtv.downloader:id/button4&quot;)
+        button.click()
+        time.sleep(10)
+
+if __name__ == '__main__':
+    suite = unittest.TestLoader().loadTestsFromTestCase(DownloadSDKAndroidTests)
+    unittest.TextTestRunner(verbosity=2).run(suite)
+</code></pre>
+
+<p>框架分析：<br />
+(1)setUp和tearDown两个必须存在，在setUp中设置&rsquo;device&rsquo;:&lsquo;android&rsquo;，&rsquo;platformName&rsquo;:&lsquo;Android&rsquo;，&rsquo;version&rsquo;:&lsquo;4.4.2&rsquo;，&rsquo;deviceName&rsquo;:&lsquo;MIUI-KXCCNBF22.0&rsquo;，&rsquo;app&rsquo;:PATH(&lsquo;/XXXX/app-debug.apk&rsquo;)  ，其中platformName表示设备类型，version表示android版本，deviceName表示机器名，app表示android包的本地路径；<br />
+(2)测试用例编写：定义test_*函数，然后就是获取各个控件，然后让python自动点击各个按钮，self.driver.find_element_by_id表示通过界面对应的控件id获取元素，然后触发button.click事件，就类似人为的点击按钮执行；<br />
+(3)执行脚本：python appiumTest1.py</p>
+
+<pre><code>test_deletedownload (__main__.DownloadSDKAndroidTests) ... test_deletedownload ...
+ok
+test_play (__main__.DownloadSDKAndroidTests) ... test_play ...
+ok
+test_resumedownload (__main__.DownloadSDKAndroidTests) ... test_resumedownload ...
+ok
+test_startdownload (__main__.DownloadSDKAndroidTests) ... test_startdownload ...
+ERROR
+test_stopdownload (__main__.DownloadSDKAndroidTests) ... test_stopdownload ...
+ok
+</code></pre>
+
+<p>以上就是一个简单的自动化测试栗子，大家可以先熟悉并参考搭建环境，然后编辑属于自己业务逻辑的单元测试。</p>
 
 	</div>
   <footer class="article-footer clearfix">
@@ -198,9 +316,9 @@ private:
 <div class="article-tags">
   <span></span>
   
-  <a href="https://linkxzhou.github.io:443/tags/c&#43;&#43;">c&#43;&#43;</a>
+  <a href="https://linkxzhou.github.io:443/tags/%E6%B5%8B%E8%AF%95">测试</a>
   
-  <a href="https://linkxzhou.github.io:443/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>
+  <a href="https://linkxzhou.github.io:443/tags/%E8%87%AA%E5%8A%A8%E5%8C%96">自动化</a>
   
 </div>
 
@@ -211,14 +329,14 @@ private:
 <div class="article-categories">
   <span></span>
   
-  <a class="article-category-link" href="https://linkxzhou.github.io:443/categories/c&#43;&#43;">c&#43;&#43;</a>
+  <a class="article-category-link" href="https://linkxzhou.github.io:443/categories/%E6%B5%8B%E8%AF%95">测试</a>
   
 </div>
 
 
 
   <div class="article-share" id="share">
-    <div data-url="https://linkxzhou.github.io:443/post/c&#43;&#43;%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8Bstate/" data-title="state - 状态模式" data-tsina="" class="share clearfix">
+    <div data-url="https://linkxzhou.github.io:443/post/appium%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-title="appium自动化测试环境搭建" data-tsina="" class="share clearfix">
     </div>
   </div>
 </footer>

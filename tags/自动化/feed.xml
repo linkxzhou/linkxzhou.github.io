@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>自动化 on linkxzhou的博客</title>
+    <link>https://linkxzhou.github.io:443/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/</link>
+    <description>Recent content in 自动化 on linkxzhou的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 15 Sep 2017 20:20:42 +0800</lastBuildDate>
+    
+	<atom:link href="https://linkxzhou.github.io:443/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>appium自动化测试环境搭建</title>
+      <link>https://linkxzhou.github.io:443/post/appium%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Fri, 15 Sep 2017 20:20:42 +0800</pubDate>
+      
+      <guid>https://linkxzhou.github.io:443/post/appium%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>appium介绍 Appium是一个开源的、跨平台的测试框架，可以用来测试Native App、混合应用、移动Web应用（H5应用）。 Appiu</description>
+    </item>
+    
+  </channel>
+</rss>
